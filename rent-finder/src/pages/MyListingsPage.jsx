@@ -78,12 +78,15 @@ export default function MyListingsPage() {
 
   const formatPrice = (price, listingType) => {
     if (listingType === 'RENT') {
-      return `$${price.toLocaleString()}/mo`;
+      return `NPR ${price.toLocaleString()}/mo`;
     }
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(2)}M`;
+    if (price >= 10000000) {
+      return `NPR ${(price / 10000000).toFixed(2)} Cr`;
     }
-    return `$${price.toLocaleString()}`;
+    if (price >= 100000) {
+      return `NPR ${(price / 100000).toFixed(2)} Lakh`;
+    }
+    return `NPR ${price.toLocaleString()}`;
   };
 
   const getStatusBadge = (status) => {

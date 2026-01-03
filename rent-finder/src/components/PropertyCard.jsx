@@ -52,13 +52,16 @@ export default function PropertyCard({ property, variant = 'default', initialSav
                      property.type === 'RENT';
     
     if (isRental) {
-      return `$${price.toLocaleString()}/mo`;
+      return `NPR ${price.toLocaleString()}/mo`;
     }
-    // For sale properties, format as millions if >= 1M, otherwise show full price
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(2)}M`;
+    // For sale properties, format as Crore/Lakh for Nepali currency
+    if (price >= 10000000) {
+      return `NPR ${(price / 10000000).toFixed(2)} Cr`;
     }
-    return `$${price.toLocaleString()}`;
+    if (price >= 100000) {
+      return `NPR ${(price / 100000).toFixed(2)} Lakh`;
+    }
+    return `NPR ${price.toLocaleString()}`;
   };
 
   const nextImage = (e) => {

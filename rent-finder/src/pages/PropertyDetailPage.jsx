@@ -92,12 +92,15 @@ export default function PropertyDetailPage() {
   const formatPrice = (price, priceType, type) => {
     const isRental = priceType === 'MONTHLY' || priceType === 'monthly' || priceType === 'month' || type === 'rent';
     if (isRental) {
-      return `$${price.toLocaleString()}/month`;
+      return `NPR ${price.toLocaleString()}/month`;
     }
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(2)}M`;
+    if (price >= 10000000) {
+      return `NPR ${(price / 10000000).toFixed(2)} Cr`;
     }
-    return `$${price.toLocaleString()}`;
+    if (price >= 100000) {
+      return `NPR ${(price / 100000).toFixed(2)} Lakh`;
+    }
+    return `NPR ${price.toLocaleString()}`;
   };
 
   const nextImage = () => {
@@ -273,7 +276,7 @@ export default function PropertyDetailPage() {
                     {formatPrice(property.price, property.priceType, property.type)}
                   </p>
                   {property.type === 'rent' && property.deposit && (
-                    <p className="text-sm text-slate-500">Deposit: ${property.deposit.toLocaleString()}</p>
+                    <p className="text-sm text-slate-500">Deposit: NPR {property.deposit.toLocaleString()}</p>
                   )}
                 </div>
               </div>

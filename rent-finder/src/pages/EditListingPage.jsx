@@ -393,12 +393,12 @@ export default function EditListingPage() {
                   Price {formData.listingType === 'RENT' ? '(per month)' : ''}
                 </label>
                 <div className="relative">
-                  <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: NEPALI_THEME.border }}>NPR</span>
                   <input
                     type="number"
                     value={formData.price}
                     onChange={(e) => updateFormData('price', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    className="w-full pl-14 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
                     style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
@@ -409,12 +409,12 @@ export default function EditListingPage() {
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Security Deposit</label>
                   <div className="relative">
-                    <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: NEPALI_THEME.border }}>NPR</span>
                     <input
                       type="number"
                       value={formData.deposit}
                       onChange={(e) => updateFormData('deposit', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                      className="w-full pl-14 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
                       style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     />
                   </div>

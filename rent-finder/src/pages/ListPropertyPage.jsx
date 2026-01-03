@@ -610,13 +610,13 @@ function Step2Specifications({ formData, updateFormData, mode }) {
           {formData.listingType === 'RENT' ? 'Monthly Rent' : 'Asking Price'}
         </label>
         <div className="relative">
-          <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400">NPR</span>
           <input
             type="text"
             value={formData.price}
             onChange={(e) => updateFormData('price', e.target.value)}
             placeholder="0.00"
-            className={`w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 ${
+            className={`w-full pl-14 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 ${
               mode === 'buyer' ? 'focus:ring-indigo-500' : 'focus:ring-sage-500'
             }`}
           />
@@ -627,13 +627,13 @@ function Step2Specifications({ formData, updateFormData, mode }) {
               Security Deposit
             </label>
             <div className="relative">
-              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400">NPR</span>
               <input
                 type="text"
                 value={formData.deposit}
                 onChange={(e) => updateFormData('deposit', e.target.value)}
                 placeholder="0.00"
-                className={`w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 ${
+                className={`w-full pl-14 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 ${
                   mode === 'buyer' ? 'focus:ring-indigo-500' : 'focus:ring-sage-500'
                 }`}
               />

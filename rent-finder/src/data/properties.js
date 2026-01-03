@@ -231,7 +231,7 @@ export const properties = [
 
 // Search suggestions for SmartMatch
 export const searchSuggestions = [
-  "Modern 3-bedroom with a home office under $3M",
+  "Modern 3-bedroom with a home office under NPR 3Cr",
   "Pet-friendly apartment near downtown with gym",
   "Luxury penthouse with panoramic views",
   "Family home with backyard and good schools",

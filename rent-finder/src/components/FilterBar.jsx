@@ -28,16 +28,16 @@ export default function FilterBar({
 
   const priceRanges = isIndigo 
     ? [
-        { label: 'Under $1M', min: 0, max: 1000000 },
-        { label: '$1M - $2M', min: 1000000, max: 2000000 },
-        { label: '$2M - $5M', min: 2000000, max: 5000000 },
-        { label: '$5M+', min: 5000000, max: Infinity },
+        { label: 'Under NPR 1Cr', min: 0, max: 10000000 },
+        { label: 'NPR 1Cr - 2Cr', min: 10000000, max: 20000000 },
+        { label: 'NPR 2Cr - 5Cr', min: 20000000, max: 50000000 },
+        { label: 'NPR 5Cr+', min: 50000000, max: Infinity },
       ]
     : [
-        { label: 'Under $2,000', min: 0, max: 2000 },
-        { label: '$2,000 - $3,000', min: 2000, max: 3000 },
-        { label: '$3,000 - $5,000', min: 3000, max: 5000 },
-        { label: '$5,000+', min: 5000, max: Infinity },
+        { label: 'Under NPR 20,000', min: 0, max: 20000 },
+        { label: 'NPR 20,000 - 35,000', min: 20000, max: 35000 },
+        { label: 'NPR 35,000 - 50,000', min: 35000, max: 50000 },
+        { label: 'NPR 50,000+', min: 50000, max: Infinity },
       ];
 
   const bedroomOptions = ['Studio', '1', '2', '3', '4+'];
