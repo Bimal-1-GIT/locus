@@ -35,7 +35,7 @@ export default function Chatbot() {
     {
       id: 1,
       type: 'bot',
-      content: 'नमस्ते! 🙏 Welcome to Locus Assistant!\n\nI\'m here to help you find your perfect property in Nepal. How can I assist you today?',
+      content: 'नमस्ते! 🙏 Welcome to E-Dalal!\n\nI\'m here to help you find your perfect property in Nepal. How can I assist you today?',
       timestamp: new Date(),
     }
   ]);
@@ -215,13 +215,13 @@ export default function Chatbot() {
             
             <div className="flex-1">
               <h3 className="font-semibold text-white flex items-center gap-2">
-                Locus Assistant
+                E-Dalal
                 <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: NEPALI.gold, color: NEPALI.primaryDark }}>
                   AI
                 </span>
               </h3>
               <p className="text-sm" style={{ color: NEPALI.goldLight }}>
-                लोकस सहायक • Always here to help
+                ई-दलाल • Always here to help
               </p>
             </div>
             

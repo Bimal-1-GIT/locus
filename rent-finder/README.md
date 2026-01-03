@@ -12,7 +12,7 @@ A modern real estate platform for Nepal, featuring AI-powered property search, b
 ### For Property Seekers
 - 🔍 **Smart AI Search** - Natural language property search powered by Google Gemini
 - 🏠 **Unified Listings** - Browse both rental and sale properties in one place
-- 💬 **AI Chatbot Assistant** - Get instant help with Locus Assistant (लोकस सहायक)
+- 💬 **AI Chatbot Assistant** - Get instant help with E-Dalal (ई-दलाल)
 - ❤️ **Save Favorites** - Keep track of properties you love
 - 📱 **Responsive Design** - Beautiful on all devices
 
@@ -240,7 +240,7 @@ The platform uses a Nepali-inspired color palette:
 Natural language property search - just describe what you're looking for:
 > "3 bedroom apartment in Kathmandu under 50,000 NPR"
 
-### Locus Assistant (Chatbot)
+### E-Dalal (Chatbot)
 AI-powered assistant that can:
 - Help find properties
 - Explain the listing process

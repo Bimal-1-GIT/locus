@@ -24,7 +24,7 @@ function getGeminiModel() {
 }
 
 // System prompt for the Locus chatbot
-const SYSTEM_PROMPT = `You are "Locus Assistant" (लोकस सहायक), a friendly and knowledgeable AI assistant for Locus, a modern real estate platform focused on Nepal.
+const SYSTEM_PROMPT = `You are "E-Dalal" (ई-दलाल), a friendly and knowledgeable AI assistant for Locus, a modern real estate platform focused on Nepal.
 
 🏔️ ABOUT LOCUS:
 - Locus is a premium real estate platform serving Nepal
@@ -271,7 +271,7 @@ Need help with something specific? 🙏`;
   }
 
   // Default fallback
-  return `नमस्ते! 🙏 I'm the Locus Assistant!
+  return `नमस्ते! 🙏 I'm E-Dalal!
 
 I can help you with:
 • 🏠 **Finding properties** - Search rentals or homes for sale
