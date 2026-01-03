@@ -1,20 +1,81 @@
-import { useState } from 'react';
-import { Heart, Trash2, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Heart, Trash2, ExternalLink, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMode } from '../context/ModeContext';
+import { useAuth } from '../context/AuthContext';
 import PropertyCard from '../components/PropertyCard';
-import { properties } from '../data/properties';
+import { api } from '../services/api';
 
 export default function SavedPage() {
   const { colors } = useMode();
-  // Mock saved properties - in real app, this would come from state/API
-  const [savedIds, setSavedIds] = useState([1, 2, 5]);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [savedProperties, setSavedProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const savedProperties = properties.filter(p => savedIds.includes(p.id));
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: '/saved' } } });
+      return;
+    }
+    fetchSavedProperties();
+  }, [isAuthenticated, navigate]);
 
-  const removeFromSaved = (id) => {
-    setSavedIds(prev => prev.filter(i => i !== id));
+  const fetchSavedProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.getSavedProperties();
+      // Transform saved properties to match expected format
+      const properties = response.saved?.map(item => {
+        const p = item.property;
+        return {
+          id: p.id,
+          title: p.title,
+          type: p.listingType === 'RENT' ? 'rent' : 'sale',
+          price: p.price,
+          priceType: p.priceType,
+          address: `${p.address}, ${p.city}`,
+          city: p.city,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          sqft: p.sqft,
+          images: p.images?.map(img => img.url) || ['https://picsum.photos/seed/default/800/600'],
+          image: p.images?.[0]?.url || 'https://picsum.photos/seed/default/800/600',
+          features: p.features?.map(f => f.name) || [],
+          auraScore: p.auraScoreOverall || Math.floor(Math.random() * 20) + 80,
+          isSaved: true,
+        };
+      }) || [];
+      setSavedProperties(properties);
+    } catch (err) {
+      console.error('Failed to fetch saved properties:', err);
+      setError('Failed to load saved properties');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const removeFromSaved = async (id) => {
+    try {
+      await api.unsaveProperty(id);
+      setSavedProperties(prev => prev.filter(p => p.id !== id));
+    } catch (err) {
+      console.error('Failed to remove from saved:', err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-slate-400 mx-auto mb-4" />
+          <p className="text-slate-600">Loading saved properties...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -28,6 +89,12 @@ export default function SavedPage() {
             {savedProperties.length} {savedProperties.length === 1 ? 'property' : 'properties'} saved
           </p>
         </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6">
+            {error}
+          </div>
+        )}
 
         {savedProperties.length === 0 ? (
           <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
@@ -56,7 +123,11 @@ export default function SavedPage() {
                 >
                   <Trash2 size={16} className="text-rose-500" />
                 </button>
-                <PropertyCard property={property} />
+                <PropertyCard 
+                  property={property} 
+                  initialSaved={true}
+                  onSaveChange={(id, saved) => !saved && removeFromSaved(id)}
+                />
               </div>
             ))}
           </div>

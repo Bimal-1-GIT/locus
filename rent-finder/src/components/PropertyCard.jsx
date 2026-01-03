@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Heart, 
   Bed, 
@@ -10,10 +10,18 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useMode } from '../context/ModeContext';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../services/api';
 import AuraScore from './AuraScore';
 
-export default function PropertyCard({ property, variant = 'default' }) {
-  const [isLiked, setIsLiked] = useState(false);
+export default function PropertyCard({ property, variant = 'default', initialSaved = false, onSaveChange }) {
+  const [isLiked, setIsLiked] = useState(initialSaved || property.isSaved || false);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsLiked(initialSaved || property.isSaved || false);
+  }, [initialSaved, property.isSaved]);
   const [currentImage, setCurrentImage] = useState(0);
   const { colors, isIndigo } = useMode();
 
@@ -50,6 +58,30 @@ export default function PropertyCard({ property, variant = 'default' }) {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: `/property/${property.id}` } } });
+      return;
+    }
+    
+    try {
+      if (isLiked) {
+        await api.unsaveProperty(property.id);
+      } else {
+        await api.saveProperty(property.id);
+      }
+      setIsLiked(!isLiked);
+      if (onSaveChange) {
+        onSaveChange(property.id, !isLiked);
+      }
+    } catch (err) {
+      console.error('Failed to save property:', err);
+    }
   };
 
   // Bento grid large card
@@ -109,11 +141,7 @@ export default function PropertyCard({ property, variant = 'default' }) {
 
           {/* Like button */}
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsLiked(!isLiked);
-            }}
+            onClick={handleSave}
             className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
               isLiked 
                 ? 'bg-rose-500 text-white' 
@@ -207,11 +235,7 @@ export default function PropertyCard({ property, variant = 'default' }) {
 
         {/* Like button */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsLiked(!isLiked);
-          }}
+          onClick={handleSave}
           className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
             isLiked 
               ? 'bg-rose-500 text-white' 
