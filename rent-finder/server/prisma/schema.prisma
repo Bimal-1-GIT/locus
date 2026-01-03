@@ -1,0 +1,317 @@
+// AuraEstate Database Schema
+// Using Prisma ORM with SQLite for local development
+// Can easily switch to PostgreSQL for production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USER & AUTH ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  role          String    @default("RENTER") // RENTER, LANDLORD, BUYER, SELLER, AGENT, ADMIN
+  isVerified    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  properties        Property[]       // Properties owned/managed by user
+  savedProperties   SavedProperty[]
+  sentMessages      Message[]        @relation("SentMessages")
+  receivedMessages  Message[]        @relation("ReceivedMessages")
+  applications      Application[]
+  reviews           Review[]
+  notifications     Notification[]
+  searchHistory     SearchHistory[]
+  viewingSchedules  ViewingSchedule[]
+  tenantProfile     TenantProfile?
+  landlordProfile   LandlordProfile?
+}
+
+model TenantProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  occupation        String?
+  employer          String?
+  annualIncome      Float?
+  creditScore       Int?
+  hasPets           Boolean  @default(false)
+  petDetails        String?
+  moveInDate        DateTime?
+  preferredLeaseTerm Int?    // months
+  
+  // Encrypted document references
+  idDocument        String?
+  proofOfIncome     String?
+  references        String?  // JSON array of references
+  
+  isVerified        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model LandlordProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  companyName       String?
+  businessLicense   String?
+  totalProperties   Int      @default(0)
+  yearsExperience   Int?
+  bio               String?
+  responseRate      Float?   // percentage
+  avgResponseTime   Int?     // minutes
+  
+  isVerified        Boolean  @default(false)
+  isSuperhost       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// ==================== PROPERTIES ====================
+
+model Property {
+  id              String   @id @default(uuid())
+  ownerId         String
+  owner           User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  // Basic Info
+  title           String
+  description     String
+  type            String   // APARTMENT, HOUSE, CONDO, TOWNHOUSE, STUDIO, LOFT, PENTHOUSE, VILLA, DUPLEX, OTHER
+  listingType     String   // RENT, SALE, BOTH
+  status          String   @default("ACTIVE") // DRAFT, ACTIVE, PENDING, RENTED, SOLD, INACTIVE
+  
+  // Pricing
+  price           Float
+  priceType       String   // MONTHLY, YEARLY, TOTAL
+  deposit         Float?
+  
+  // Location
+  address         String
+  unit            String?
+  city            String
+  state           String
+  zipCode         String
+  country         String   @default("USA")
+  latitude        Float?
+  longitude       Float?
+  
+  // Details
+  bedrooms        Int
+  bathrooms       Float
+  sqft            Int
+  yearBuilt       Int?
+  lotSize         Float?
+  parking         String?
+  
+  // Availability
+  availableFrom   DateTime?
+  leaseTerm       Int?     // months, null for sale
+  
+  // Policies
+  petFriendly     Boolean  @default(false)
+  petDeposit      Float?
+  smokingAllowed  Boolean  @default(false)
+  
+  // Aura Score Components (0-100)
+  auraScoreOverall      Int?
+  auraScoreLifestyle    Int?
+  auraScoreConnectivity Int?
+  auraScoreEnvironment  Int?
+  
+  // Stats
+  viewCount       Int      @default(0)
+  saveCount       Int      @default(0)
+  inquiryCount    Int      @default(0)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  featuredUntil   DateTime?
+
+  // Relations
+  images          PropertyImage[]
+  features        PropertyFeature[]
+  savedBy         SavedProperty[]
+  applications    Application[]
+  messages        Message[]
+  reviews         Review[]
+  viewings        ViewingSchedule[]
+}
+
+model PropertyImage {
+  id          String   @id @default(uuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url         String
+  caption     String?
+  isPrimary   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model PropertyFeature {
+  id          String   @id @default(uuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name        String
+  category    String   @default("OTHER") // INTERIOR, EXTERIOR, AMENITY, UTILITY, SECURITY, ACCESSIBILITY, OTHER
+}
+
+// ==================== INTERACTIONS ====================
+
+model SavedProperty {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  savedAt     DateTime @default(now())
+  notes       String?
+
+  @@unique([userId, propertyId])
+}
+
+model Application {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId      String
+  property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  status          String   @default("PENDING") // PENDING, REVIEWING, APPROVED, REJECTED, WITHDRAWN, EXPIRED
+  message         String?
+  moveInDate      DateTime?
+  leaseTerm       Int?              // months
+  offeredPrice    Float?
+  
+  // For sale offers
+  isPreApproved   Boolean?
+  financingType   String?
+  
+  submittedAt     DateTime @default(now())
+  reviewedAt      DateTime?
+  respondedAt     DateTime?
+  
+  @@unique([userId, propertyId])
+}
+
+model ViewingSchedule {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  scheduledAt DateTime
+  duration    Int      @default(30) // minutes
+  type        String   @default("IN_PERSON") // IN_PERSON, VIDEO_CALL, SELF_GUIDED
+  status      String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==================== MESSAGING ====================
+
+model Message {
+  id          String   @id @default(uuid())
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId  String
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  
+  content     String
+  isRead      Boolean  @default(false)
+  readAt      DateTime?
+  
+  createdAt   DateTime @default(now())
+}
+
+// ==================== REVIEWS ====================
+
+model Review {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  rating      Int      // 1-5
+  title       String?
+  content     String?
+  
+  // Detailed ratings
+  locationRating    Int?
+  valueRating       Int?
+  conditionRating   Int?
+  landlordRating    Int?
+  
+  isVerified  Boolean  @default(false) // Verified tenant/buyer
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, propertyId])
+}
+
+// ==================== NOTIFICATIONS ====================
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        String   // MESSAGE, APPLICATION_UPDATE, VIEWING_REMINDER, PRICE_DROP, NEW_LISTING, SAVED_SEARCH_MATCH, SYSTEM
+  title       String
+  message     String
+  link        String?
+  isRead      Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+}
+
+// ==================== SEARCH & ANALYTICS ====================
+
+model SearchHistory {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  query       String
+  filters     String?  // JSON string of filters
+  resultCount Int?
+  
+  createdAt   DateTime @default(now())
+}
+
+model SavedSearch {
+  id           String   @id @default(uuid())
+  userId       String
+  name         String
+  query        String?
+  filters      String   // JSON string of filters
+  alertEnabled Boolean  @default(true)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
