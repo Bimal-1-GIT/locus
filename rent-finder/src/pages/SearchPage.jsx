@@ -38,7 +38,8 @@ export default function SearchPage() {
         id: p.id,
         title: p.title,
         description: p.description,
-        type: p.type,
+        type: p.listingType === 'RENT' ? 'rent' : 'sale', // Use listingType for filtering
+        propertyType: p.type, // Keep property type (APARTMENT, HOUSE, etc.)
         listingType: p.listingType,
         price: p.price,
         address: `${p.address}, ${p.city}, ${p.state} ${p.zipCode}`,

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { ModeProvider } from './context/ModeContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
+import Chatbot from './components/Chatbot';
 import HomePage from './pages/HomePage';
 import SearchPage from './pages/SearchPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
@@ -47,6 +48,7 @@ function App() {
               <Route path="/my-listings" element={<MyListingsPage />} />
               <Route path="/edit-listing/:id" element={<EditListingPage />} />
             </Routes>
+            <Chatbot />
           </AppLayout>
         </Router>
       </AuthProvider>

@@ -8,13 +8,10 @@ import {
   User, 
   Menu, 
   X,
-  Building2,
-  Key,
   LogIn,
   Plus,
   LayoutList
 } from 'lucide-react';
-import { useMode } from '../context/ModeContext';
 import { useAuth } from '../context/AuthContext';
 
 // Nepali Theme Colors
@@ -31,7 +28,6 @@ const NEPALI = {
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { mode, toggleMode, isIndigo, colors } = useMode();
   const { user, isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -104,30 +100,6 @@ export default function Header() {
               <Plus size={18} />
               <span>List Property</span>
             </Link>
-
-            {/* Mode Toggle */}
-            <button
-              onClick={toggleMode}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all"
-              style={{
-                backgroundColor: isIndigo ? '#FDF5E6' : '#F5E6D3',
-                color: NEPALI.primary,
-                border: `2px solid ${NEPALI.brown}`
-              }}
-              title={isIndigo ? 'Switch to Renter Mode' : 'Switch to Buyer Mode'}
-            >
-              {isIndigo ? (
-                <>
-                  <Building2 size={16} />
-                  <span className="hidden sm:inline">Buy/Sell</span>
-                </>
-              ) : (
-                <>
-                  <Key size={16} />
-                  <span className="hidden sm:inline">Rent</span>
-                </>
-              )}
-            </button>
 
             {/* Profile / Login */}
             {isAuthenticated ? (

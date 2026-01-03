@@ -9,6 +9,7 @@ import propertyRoutes from './routes/properties.js';
 import applicationRoutes from './routes/applications.js';
 import messageRoutes from './routes/messages.js';
 import uploadRoutes from './routes/upload.js';
+import chatbotRoutes from './routes/chatbot.js';
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
