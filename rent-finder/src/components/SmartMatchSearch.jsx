@@ -3,6 +3,19 @@ import { Search, Sparkles, X, Mic } from 'lucide-react';
 import { useMode } from '../context/ModeContext';
 import { searchSuggestions } from '../data/properties';
 
+// Nepali Theme Colors
+const NEPALI = {
+  primary: '#8B0000',
+  primaryDark: '#5C0000',
+  gold: '#D4AF37',
+  saffron: '#FF9933',
+  cream: '#FDF5E6',
+  creamDark: '#F5E6D3',
+  brown: '#CD853F',
+  text: '#2F1810',
+  textMuted: '#6B4423',
+};
+
 export default function SmartMatchSearch({ onSearch, className = '' }) {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -42,14 +55,15 @@ export default function SmartMatchSearch({ onSearch, className = '' }) {
     <div className={`relative ${className}`} ref={inputRef}>
       <form onSubmit={handleSubmit}>
         <div
-          className={`relative flex items-center bg-white rounded-2xl shadow-lg transition-all duration-300 ${
-            isFocused
-              ? `ring-2 ${colors.primaryRing} shadow-xl`
-              : 'hover:shadow-xl'
-          }`}
+          className="relative flex items-center rounded-2xl shadow-lg transition-all duration-300"
+          style={{
+            backgroundColor: '#FFFAF0',
+            border: `2px solid ${isFocused ? NEPALI.primary : NEPALI.gold}`,
+            boxShadow: isFocused ? `0 0 0 3px rgba(139, 0, 0, 0.1)` : '0 4px 20px rgba(139, 0, 0, 0.08)'
+          }}
         >
           {/* AI Badge */}
-          <div className={`absolute left-4 flex items-center gap-1.5 ${colors.primaryText}`}>
+          <div className="absolute left-4 flex items-center gap-1.5" style={{ color: NEPALI.primary }}>
             <Sparkles size={18} className="animate-pulse-soft" />
             <span className="text-xs font-medium hidden sm:inline">SmartMatch</span>
           </div>
@@ -68,7 +82,8 @@ export default function SmartMatchSearch({ onSearch, className = '' }) {
             }}
             onBlur={() => setIsFocused(false)}
             placeholder="Describe your dream property..."
-            className="w-full py-4 pl-32 sm:pl-40 pr-24 text-slate-800 placeholder-slate-400 bg-transparent outline-none text-lg"
+            className="w-full py-4 pl-32 sm:pl-40 pr-24 bg-transparent outline-none text-lg"
+            style={{ color: NEPALI.text }}
           />
 
           {/* Right actions */}
@@ -77,21 +92,26 @@ export default function SmartMatchSearch({ onSearch, className = '' }) {
               <button
                 type="button"
                 onClick={() => setQuery('')}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-400"
+                className="p-2 rounded-full transition-colors"
+                style={{ color: NEPALI.textMuted }}
               >
                 <X size={18} />
               </button>
             )}
             <button
               type="button"
-              className="p-2 rounded-full hover:bg-slate-100 text-slate-400"
+              className="p-2 rounded-full transition-colors"
+              style={{ color: NEPALI.textMuted }}
               title="Voice search"
             >
               <Mic size={18} />
             </button>
             <button
               type="submit"
-              className={`p-3 rounded-xl ${colors.primaryBg} ${colors.primaryBgHover} text-white transition-colors`}
+              className="p-3 rounded-xl text-white transition-all hover:shadow-md"
+              style={{ 
+                background: `linear-gradient(135deg, ${NEPALI.primary} 0%, #A52A2A 100%)`,
+              }}
             >
               <Search size={20} />
             </button>
@@ -101,18 +121,22 @@ export default function SmartMatchSearch({ onSearch, className = '' }) {
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (query || filteredSuggestions.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 rounded-xl shadow-xl overflow-hidden z-50"
+          style={{ backgroundColor: '#FFFAF0', border: `2px solid ${NEPALI.gold}` }}>
           <div className="p-2">
-            <p className="px-3 py-2 text-xs font-medium text-slate-400 uppercase tracking-wide">
+            <p className="px-3 py-2 text-xs font-medium uppercase tracking-wide" style={{ color: NEPALI.textMuted }}>
               {query ? 'Suggestions' : 'Try searching for...'}
             </p>
             {(query ? filteredSuggestions : searchSuggestions).slice(0, 5).map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-3"
+                className="w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center gap-3"
+                style={{ color: NEPALI.text }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = NEPALI.creamDark}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
-                <Search size={16} className="text-slate-400" />
+                <Search size={16} style={{ color: NEPALI.brown }} />
                 <span>{suggestion}</span>
               </button>
             ))}

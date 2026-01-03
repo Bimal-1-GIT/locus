@@ -1,54 +1,69 @@
 @import "tailwindcss";
 
-/* AuraEstate Custom Theme */
+/* AuraEstate Custom Theme - Nepali Inspired */
 @theme {
-  /* Indigo Mode - Buyers/Sellers */
-  --color-indigo-50: #eef2ff;
-  --color-indigo-100: #e0e7ff;
-  --color-indigo-200: #c7d2fe;
-  --color-indigo-300: #a5b4fc;
-  --color-indigo-400: #818cf8;
-  --color-indigo-500: #6366f1;
-  --color-indigo-600: #4f46e5;
-  --color-indigo-700: #4338ca;
-  --color-indigo-800: #3730a3;
-  --color-indigo-900: #312e81;
+  /* Nepali Color Palette */
+  --color-nepali-maroon: #8B0000;
+  --color-nepali-maroon-dark: #5C0000;
+  --color-nepali-maroon-light: #A52A2A;
+  --color-nepali-gold: #D4AF37;
+  --color-nepali-gold-light: #E5C158;
+  --color-nepali-saffron: #FF9933;
+  --color-nepali-cream: #FDF5E6;
+  --color-nepali-cream-dark: #F5E6D3;
+  --color-nepali-brown: #CD853F;
+  --color-nepali-brown-dark: #8B4513;
+  --color-nepali-text: #2F1810;
+  --color-nepali-text-muted: #6B4423;
+  --color-nepali-blue: #003893;
   
-  /* Sage Mode - Renters/Landlords */
-  --color-sage-50: #f1f5f1;
-  --color-sage-100: #dce6dc;
-  --color-sage-200: #c2d4c2;
-  --color-sage-300: #a3bfa3;
-  --color-sage-400: #86a789;
-  --color-sage-500: #6b9470;
-  --color-sage-600: #557a59;
-  --color-sage-700: #456249;
-  --color-sage-800: #394f3c;
-  --color-sage-900: #2f4132;
+  /* Indigo Mode - Buyers/Sellers (Nepali inspired) */
+  --color-indigo-50: #FDF5E6;
+  --color-indigo-100: #F5E6D3;
+  --color-indigo-200: #E5C158;
+  --color-indigo-300: #D4AF37;
+  --color-indigo-400: #CD853F;
+  --color-indigo-500: #A52A2A;
+  --color-indigo-600: #8B0000;
+  --color-indigo-700: #5C0000;
+  --color-indigo-800: #3D0000;
+  --color-indigo-900: #2A0000;
   
-  /* Neutral palette */
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  --color-slate-950: #020617;
+  /* Sage Mode - Renters/Landlords (Nepali inspired) */
+  --color-sage-50: #FDF5E6;
+  --color-sage-100: #F5E6D3;
+  --color-sage-200: #E5C158;
+  --color-sage-300: #D4AF37;
+  --color-sage-400: #CD853F;
+  --color-sage-500: #8B4513;
+  --color-sage-600: #6B4423;
+  --color-sage-700: #5C3A1D;
+  --color-sage-800: #4A2F17;
+  --color-sage-900: #3A2412;
+  
+  /* Neutral palette (warm tones) */
+  --color-slate-50: #FDF5E6;
+  --color-slate-100: #F5E6D3;
+  --color-slate-200: #E8D5B7;
+  --color-slate-300: #D4C4A8;
+  --color-slate-400: #A89880;
+  --color-slate-500: #6B4423;
+  --color-slate-600: #5C3A1D;
+  --color-slate-700: #4A2F17;
+  --color-slate-800: #2F1810;
+  --color-slate-900: #1A0D08;
+  --color-slate-950: #0D0604;
   
   /* Typography */
   --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Mukta', 'Inter', system-ui, sans-serif;
 }
 
 /* Base styles */
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-slate-50);
-  color: var(--color-slate-800);
+  background-color: var(--color-nepali-cream);
+  color: var(--color-nepali-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -64,31 +79,31 @@ body {
   transition: background-color 0.5s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Nepali themed */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-slate-100);
+  background: var(--color-nepali-cream-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-slate-300);
+  background: var(--color-nepali-brown);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-slate-400);
+  background: var(--color-nepali-maroon);
 }
 
-/* Glassmorphism effect */
+/* Glassmorphism effect - Nepali themed */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(253, 245, 230, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid var(--color-nepali-gold);
 }
 
 /* Bento grid item hover effect */
@@ -98,16 +113,41 @@ body {
 
 .bento-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(139, 0, 0, 0.15);
 }
 
-/* Aura score gradient */
+/* Aura score gradient - Nepali themed */
 .aura-gradient-indigo {
-  background: linear-gradient(135deg, var(--color-indigo-500), var(--color-indigo-700));
+  background: linear-gradient(135deg, var(--color-nepali-maroon), var(--color-nepali-maroon-dark));
 }
 
 .aura-gradient-sage {
-  background: linear-gradient(135deg, var(--color-sage-400), var(--color-sage-600));
+  background: linear-gradient(135deg, var(--color-nepali-brown), var(--color-nepali-brown-dark));
+}
+
+/* Nepali decorative patterns */
+.nepali-border {
+  border: 2px solid var(--color-nepali-gold);
+}
+
+.nepali-border-double {
+  border: 4px double var(--color-nepali-maroon);
+}
+
+.nepali-card {
+  background-color: #FFFAF0;
+  border: 2px solid var(--color-nepali-gold);
+  box-shadow: 0 4px 20px rgba(139, 0, 0, 0.08);
+}
+
+.nepali-button-primary {
+  background: linear-gradient(135deg, var(--color-nepali-maroon) 0%, var(--color-nepali-maroon-light) 100%);
+  box-shadow: 0 4px 0 var(--color-nepali-maroon-dark);
+}
+
+.nepali-button-primary:hover {
+  box-shadow: 0 2px 0 var(--color-nepali-maroon-dark);
+  transform: translateY(2px);
 }
 
 /* Animation keyframes */

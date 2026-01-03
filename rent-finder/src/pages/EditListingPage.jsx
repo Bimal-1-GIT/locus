@@ -37,6 +37,19 @@ const AMENITIES = [
   'High Ceilings', 'Natural Light', 'Balcony/Terrace', 'Fireplace', 'Hardwood Floors', 'City Views'
 ];
 
+// Nepali-inspired color palette
+const NEPALI_THEME = {
+  primary: '#8B0000',        // Deep maroon/red from flag
+  primaryDark: '#5C0000',    // Darker shade
+  secondary: '#D4AF37',      // Temple gold
+  accent: '#FF9933',         // Saffron orange
+  background: '#FDF5E6',     // Cream/old lace
+  cardBg: '#FFFAF0',         // Floral white
+  border: '#CD853F',         // Earthy brown
+  text: '#2F1810',           // Dark brown
+  textMuted: '#6B4423',      // Muted brown
+};
+
 export default function EditListingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -252,71 +265,82 @@ export default function EditListingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen py-8" style={{ backgroundColor: NEPALI_THEME.background }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        {/* Header with Nepali decorative border */}
+        <div className="flex items-center gap-4 mb-8 pb-4" style={{ borderBottom: `4px double ${NEPALI_THEME.primary}` }}>
           <Link
             to="/my-listings"
-            className="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+            className="p-2 rounded-lg border-2 transition-colors hover:bg-amber-50"
+            style={{ borderColor: NEPALI_THEME.secondary, color: NEPALI_THEME.primary }}
           >
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-luxury font-semibold text-slate-800">Edit Listing</h1>
-            <p className="text-slate-600">Update your property details</p>
+            <h1 className="text-2xl font-semibold" style={{ color: NEPALI_THEME.primary }}>
+              Edit Listing
+              <span className="block text-sm font-normal" style={{ color: NEPALI_THEME.textMuted }}>सम्पादन गर्नुहोस्</span>
+            </h1>
+            <p style={{ color: NEPALI_THEME.textMuted }}>Update your property details</p>
           </div>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-            <Check className="text-green-500" size={20} />
-            <p className="text-green-700">Property updated successfully! Redirecting...</p>
+          <div className="rounded-xl p-4 mb-6 flex items-center gap-3" style={{ backgroundColor: '#E8F5E9', border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <Check style={{ color: NEPALI_THEME.secondary }} size={20} />
+            <p style={{ color: NEPALI_THEME.text }}>Property updated successfully! Redirecting...</p>
           </div>
         )}
 
         {/* Error Message */}
         {error && formData.title && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-            <p className="text-red-700">{error}</p>
+          <div className="rounded-xl p-4 mb-6" style={{ backgroundColor: '#FFF0F0', border: `2px solid ${NEPALI_THEME.primary}` }}>
+            <p style={{ color: NEPALI_THEME.primary }}>{error}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Basic Information</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Basic Information
+            </h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Title</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => updateFormData('title', e.target.value)}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                  style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Description</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => updateFormData('description', e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 resize-none transition-all"
+                  style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Property Type</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Property Type</label>
                   <select
                     value={formData.type}
                     onChange={(e) => updateFormData('type', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   >
                     {PROPERTY_TYPES.map(type => (
                       <option key={type.id} value={type.id}>{type.label}</option>
@@ -325,11 +349,12 @@ export default function EditListingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Listing Type</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Listing Type</label>
                   <select
                     value={formData.listingType}
                     onChange={(e) => updateFormData('listingType', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   >
                     {LISTING_TYPES.map(type => (
                       <option key={type.id} value={type.id}>{type.label}</option>
@@ -338,11 +363,12 @@ export default function EditListingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => updateFormData('status', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   >
                     {STATUS_OPTIONS.map(status => (
                       <option key={status.id} value={status.id}>{status.label}</option>
@@ -354,21 +380,26 @@ export default function EditListingPage() {
           </div>
 
           {/* Pricing */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Pricing</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Pricing
+            </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>
                   Price {formData.listingType === 'RENT' ? '(per month)' : ''}
                 </label>
                 <div className="relative">
-                  <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <input
                     type="number"
                     value={formData.price}
                     onChange={(e) => updateFormData('price', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
                 </div>
@@ -376,14 +407,15 @@ export default function EditListingPage() {
 
               {formData.listingType === 'RENT' && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Security Deposit</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Security Deposit</label>
                   <div className="relative">
-                    <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                     <input
                       type="number"
                       value={formData.deposit}
                       onChange={(e) => updateFormData('deposit', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                      style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     />
                   </div>
                 </div>
@@ -392,19 +424,24 @@ export default function EditListingPage() {
           </div>
 
           {/* Location */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Location</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Location
+            </h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Street Address</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Street Address</label>
                 <div className="relative">
-                  <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <input
                     type="text"
                     value={formData.address}
                     onChange={(e) => updateFormData('address', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
                 </div>
@@ -412,32 +449,35 @@ export default function EditListingPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>City</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => updateFormData('city', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">State</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>State</label>
                   <input
                     type="text"
                     value={formData.state}
                     onChange={(e) => updateFormData('state', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>ZIP Code</label>
                   <input
                     type="text"
                     value={formData.zipCode}
                     onChange={(e) => updateFormData('zipCode', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                     required
                   />
                 </div>
@@ -446,18 +486,23 @@ export default function EditListingPage() {
           </div>
 
           {/* Specifications */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Specifications</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Specifications
+            </h2>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Bedrooms</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Bedrooms</label>
                 <div className="relative">
-                  <Bed size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Bed size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <select
                     value={formData.bedrooms}
                     onChange={(e) => updateFormData('bedrooms', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   >
                     <option value="0">Studio</option>
                     <option value="1">1</option>
@@ -469,13 +514,14 @@ export default function EditListingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Bathrooms</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Bathrooms</label>
                 <div className="relative">
-                  <Bath size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Bath size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <select
                     value={formData.bathrooms}
                     onChange={(e) => updateFormData('bathrooms', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   >
                     <option value="1">1</option>
                     <option value="1.5">1.5</option>
@@ -487,27 +533,29 @@ export default function EditListingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Square Feet</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Square Feet</label>
                 <div className="relative">
-                  <Square size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Square size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <input
                     type="number"
                     value={formData.sqft}
                     onChange={(e) => updateFormData('sqft', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Available From</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: NEPALI_THEME.text }}>Available From</label>
                 <div className="relative">
-                  <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: NEPALI_THEME.border }} />
                   <input
                     type="date"
                     value={formData.availableFrom}
                     onChange={(e) => updateFormData('availableFrom', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ border: `2px solid ${NEPALI_THEME.border}`, backgroundColor: '#FFFDF9' }}
                   />
                 </div>
               </div>
@@ -519,16 +567,21 @@ export default function EditListingPage() {
                   type="checkbox"
                   checked={formData.petFriendly}
                   onChange={(e) => updateFormData('petFriendly', e.target.checked)}
-                  className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  className="w-5 h-5 rounded"
+                  style={{ accentColor: NEPALI_THEME.primary }}
                 />
-                <span className="text-slate-700">Pet Friendly</span>
+                <span style={{ color: NEPALI_THEME.text }}>Pet Friendly</span>
               </label>
             </div>
           </div>
 
           {/* Amenities */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Amenities & Features</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Amenities & Features
+            </h2>
             
             <div className="flex flex-wrap gap-2">
               {AMENITIES.map(amenity => (
@@ -536,11 +589,12 @@ export default function EditListingPage() {
                   key={amenity}
                   type="button"
                   onClick={() => toggleFeature(amenity)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    formData.features.includes(amenity)
-                      ? `${colors.primaryBg} text-white`
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor: formData.features.includes(amenity) ? NEPALI_THEME.primary : '#F5E6D3',
+                    color: formData.features.includes(amenity) ? '#FFFFFF' : NEPALI_THEME.text,
+                    border: `2px solid ${formData.features.includes(amenity) ? NEPALI_THEME.primary : NEPALI_THEME.border}`
+                  }}
                 >
                   {amenity}
                 </button>
@@ -549,26 +603,31 @@ export default function EditListingPage() {
           </div>
 
           {/* Images */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Photos</h2>
+          <div className="rounded-2xl p-6 shadow-lg relative overflow-hidden" style={{ backgroundColor: NEPALI_THEME.cardBg, border: `2px solid ${NEPALI_THEME.secondary}` }}>
+            <div className="absolute top-0 right-0 w-20 h-20 opacity-10" style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI_THEME.primary} 0%, transparent 70%)` }} />
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: NEPALI_THEME.primary }}>
+              <span style={{ color: NEPALI_THEME.secondary }}>◈</span>
+              Photos
+            </h2>
 
             {/* Existing Images */}
             {formData.existingImages.length > 0 && (
               <div className="mb-4">
-                <p className="text-sm text-slate-600 mb-2">Current Photos</p>
+                <p className="text-sm mb-2" style={{ color: NEPALI_THEME.textMuted }}>Current Photos</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {formData.existingImages.map((img, index) => (
-                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden bg-slate-100">
+                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden" style={{ backgroundColor: '#F5E6D3' }}>
                       <img src={img.url} alt="" className="w-full h-full object-cover" />
                       <button
                         type="button"
                         onClick={() => removeExistingImage(index)}
-                        className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                        className="absolute top-2 right-2 w-6 h-6 text-white rounded-full flex items-center justify-center transition-colors"
+                        style={{ backgroundColor: NEPALI_THEME.primary }}
                       >
                         <X size={14} />
                       </button>
                       {index === 0 && (
-                        <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-indigo-600 text-white text-xs rounded">
+                        <span className="absolute bottom-2 left-2 px-2 py-0.5 text-white text-xs rounded" style={{ backgroundColor: NEPALI_THEME.secondary }}>
                           Primary
                         </span>
                       )}
@@ -581,15 +640,16 @@ export default function EditListingPage() {
             {/* New Images */}
             {formData.newImages.length > 0 && (
               <div className="mb-4">
-                <p className="text-sm text-slate-600 mb-2">New Photos to Upload</p>
+                <p className="text-sm mb-2" style={{ color: NEPALI_THEME.textMuted }}>New Photos to Upload</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {formData.newImages.map((img, index) => (
-                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden bg-slate-100">
+                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden" style={{ backgroundColor: '#F5E6D3' }}>
                       <img src={img.preview} alt="" className="w-full h-full object-cover" />
                       <button
                         type="button"
                         onClick={() => removeNewImage(index)}
-                        className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                        className="absolute top-2 right-2 w-6 h-6 text-white rounded-full flex items-center justify-center transition-colors"
+                        style={{ backgroundColor: NEPALI_THEME.primary }}
                       >
                         <X size={14} />
                       </button>
@@ -600,9 +660,12 @@ export default function EditListingPage() {
             )}
 
             {/* Upload Button */}
-            <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
-              <Camera size={24} className="text-slate-400" />
-              <span className="text-slate-600">Click to upload more photos</span>
+            <label 
+              className="flex items-center justify-center gap-2 p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all hover:shadow-md"
+              style={{ borderColor: NEPALI_THEME.border, backgroundColor: '#FFFDF9' }}
+            >
+              <Camera size={24} style={{ color: NEPALI_THEME.border }} />
+              <span style={{ color: NEPALI_THEME.textMuted }}>Click to upload more photos</span>
               <input
                 type="file"
                 accept="image/*"
@@ -617,14 +680,23 @@ export default function EditListingPage() {
           <div className="flex gap-4">
             <Link
               to="/my-listings"
-              className="flex-1 py-4 border border-slate-200 rounded-xl font-semibold text-slate-700 text-center hover:bg-slate-50 transition-colors"
+              className="flex-1 py-4 rounded-xl font-semibold text-center transition-all hover:shadow-md"
+              style={{ 
+                border: `2px solid ${NEPALI_THEME.border}`,
+                color: NEPALI_THEME.text,
+                backgroundColor: '#FFFDF9'
+              }}
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className={`flex-1 ${colors.primaryBg} text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50`}
+              className="flex-1 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-50 hover:shadow-lg"
+              style={{ 
+                background: `linear-gradient(135deg, ${NEPALI_THEME.primary} 0%, #A52A2A 100%)`,
+                boxShadow: `0 4px 0 ${NEPALI_THEME.primaryDark}`
+              }}
             >
               {saving ? (
                 <>

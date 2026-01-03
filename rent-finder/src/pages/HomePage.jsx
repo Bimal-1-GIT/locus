@@ -7,6 +7,20 @@ import PropertyCard from '../components/PropertyCard';
 import DiscoveryFeed from '../components/DiscoveryFeed';
 import { api } from '../services/api';
 
+// Nepali Theme Colors
+const NEPALI = {
+  primary: '#8B0000',
+  primaryDark: '#5C0000',
+  gold: '#D4AF37',
+  goldLight: '#E5C158',
+  saffron: '#FF9933',
+  cream: '#FDF5E6',
+  creamDark: '#F5E6D3',
+  brown: '#CD853F',
+  text: '#2F1810',
+  textMuted: '#6B4423',
+};
+
 export default function HomePage() {
   const { colors, isIndigo, isSage, toggleMode } = useMode();
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,39 +81,51 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ backgroundColor: NEPALI.cream }}>
       {/* Hero Section */}
-      <section className={`relative py-16 px-4 overflow-hidden mode-transition ${
-        isIndigo ? 'bg-gradient-to-br from-indigo-50 via-white to-slate-50' : 'bg-gradient-to-br from-sage-50 via-white to-slate-50'
-      }`}>
-        {/* Background decoration */}
+      <section className="relative py-16 px-4 overflow-hidden mode-transition" style={{
+        background: `linear-gradient(135deg, ${NEPALI.cream} 0%, #FFFAF0 50%, ${NEPALI.creamDark} 100%)`
+      }}>
+        {/* Background decoration - Nepali inspired patterns */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl opacity-30 ${
-            isIndigo ? 'bg-indigo-300' : 'bg-sage-300'
-          }`} />
-          <div className={`absolute -bottom-40 -left-40 w-80 h-80 rounded-full blur-3xl opacity-20 ${
-            isIndigo ? 'bg-indigo-200' : 'bg-sage-200'
-          }`} />
+          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl opacity-20" 
+            style={{ backgroundColor: NEPALI.gold }} />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full blur-3xl opacity-15" 
+            style={{ backgroundColor: NEPALI.primary }} />
+          {/* Decorative mountain silhouette */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 opacity-5"
+            style={{
+              background: `linear-gradient(135deg, ${NEPALI.primary} 25%, transparent 25%),
+                          linear-gradient(225deg, ${NEPALI.primary} 25%, transparent 25%)`,
+              backgroundSize: '64px 64px'
+            }}
+          />
         </div>
 
         <div className="relative max-w-7xl mx-auto">
           {/* Mode indicator */}
           <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
+              style={{ 
+                backgroundColor: 'rgba(255, 250, 240, 0.9)',
+                border: `2px solid ${NEPALI.gold}`,
+                backdropFilter: 'blur(8px)'
+              }}>
               {isIndigo ? (
                 <>
-                  <Building2 size={18} className="text-indigo-600" />
-                  <span className="text-sm font-medium text-indigo-700">Buyer & Seller Mode</span>
+                  <Building2 size={18} style={{ color: NEPALI.primary }} />
+                  <span className="text-sm font-medium" style={{ color: NEPALI.primary }}>Buyer & Seller Mode</span>
                 </>
               ) : (
                 <>
-                  <Key size={18} className="text-sage-500" />
-                  <span className="text-sm font-medium text-sage-700">Renter & Landlord Mode</span>
+                  <Key size={18} style={{ color: NEPALI.brown }} />
+                  <span className="text-sm font-medium" style={{ color: NEPALI.brown }}>Renter & Landlord Mode</span>
                 </>
               )}
               <button 
                 onClick={toggleMode}
-                className="ml-2 text-xs text-slate-500 hover:text-slate-700 underline"
+                className="ml-2 text-xs underline hover:no-underline"
+                style={{ color: NEPALI.textMuted }}
               >
                 Switch
               </button>
@@ -108,10 +134,13 @@ export default function HomePage() {
 
           {/* Hero content */}
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <h1 className="font-luxury text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-800 mb-4">
+            <h1 className="font-luxury text-4xl md:text-5xl lg:text-6xl font-semibold mb-4" style={{ color: NEPALI.primary }}>
               {isIndigo ? 'Find Your Dream Home' : 'Discover Your Perfect Rental'}
             </h1>
-            <p className="text-lg text-slate-600 mb-8">
+            <p className="text-sm mb-1" style={{ color: NEPALI.gold }}>
+              {isIndigo ? 'सपनाको घर खोज्नुहोस्' : 'उत्तम भाडाको घर पत्ता लगाउनुहोस्'}
+            </p>
+            <p className="text-lg mb-8" style={{ color: NEPALI.textMuted }}>
               {isIndigo 
                 ? 'Browse exclusive properties with our AI-powered search. From luxury penthouses to charming townhouses.'
                 : 'Explore curated rentals tailored to your lifestyle. Quick applications, verified listings.'
@@ -124,18 +153,18 @@ export default function HomePage() {
             {/* Quick stats */}
             <div className="flex items-center justify-center gap-8 mt-8">
               <div className="text-center">
-                <p className={`text-2xl font-bold ${colors.primaryText}`}>2,500+</p>
-                <p className="text-sm text-slate-500">Active Listings</p>
+                <p className="text-2xl font-bold" style={{ color: NEPALI.primary }}>2,500+</p>
+                <p className="text-sm" style={{ color: NEPALI.textMuted }}>Active Listings</p>
               </div>
-              <div className="w-px h-10 bg-slate-200" />
+              <div className="w-px h-10" style={{ backgroundColor: NEPALI.gold }} />
               <div className="text-center">
-                <p className={`text-2xl font-bold ${colors.primaryText}`}>98%</p>
-                <p className="text-sm text-slate-500">Satisfaction Rate</p>
+                <p className="text-2xl font-bold" style={{ color: NEPALI.primary }}>98%</p>
+                <p className="text-sm" style={{ color: NEPALI.textMuted }}>Satisfaction Rate</p>
               </div>
-              <div className="w-px h-10 bg-slate-200" />
+              <div className="w-px h-10" style={{ backgroundColor: NEPALI.gold }} />
               <div className="text-center">
-                <p className={`text-2xl font-bold ${colors.primaryText}`}>24h</p>
-                <p className="text-sm text-slate-500">Avg. Response</p>
+                <p className="text-2xl font-bold" style={{ color: NEPALI.primary }}>24h</p>
+                <p className="text-sm" style={{ color: NEPALI.textMuted }}>Avg. Response</p>
               </div>
             </div>
           </div>
@@ -148,12 +177,15 @@ export default function HomePage() {
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-luxury text-2xl font-semibold text-slate-800">Featured Properties</h2>
-              <p className="text-slate-500">Handpicked selections for you</p>
+              <h2 className="font-luxury text-2xl font-semibold" style={{ color: NEPALI.primary }}>
+                <span style={{ color: NEPALI.gold }}>◈</span> Featured Properties
+              </h2>
+              <p style={{ color: NEPALI.textMuted }}>Handpicked selections for you</p>
             </div>
             <Link 
               to="/search" 
-              className={`flex items-center gap-2 ${colors.primaryText} ${colors.primaryTextHover} font-medium`}
+              className="flex items-center gap-2 font-medium transition-colors hover:underline"
+              style={{ color: NEPALI.primary }}
             >
               View all <ArrowRight size={18} />
             </Link>
@@ -162,14 +194,18 @@ export default function HomePage() {
           {/* Bento Grid Layout */}
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: NEPALI.brown }} />
             </div>
           ) : displayProperties.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-slate-500">No properties available yet. Be the first to list!</p>
+              <p style={{ color: NEPALI.textMuted }}>No properties available yet. Be the first to list!</p>
               <Link 
                 to="/list-property"
-                className={`inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-lg ${colors.primaryBg} text-white font-medium`}
+                className="inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all hover:shadow-lg"
+                style={{ 
+                  background: `linear-gradient(135deg, ${NEPALI.primary} 0%, #A52A2A 100%)`,
+                  boxShadow: `0 4px 0 ${NEPALI.primaryDark}`
+                }}
               >
                 List a Property
               </Link>
@@ -195,14 +231,22 @@ export default function HomePage() {
         <DiscoveryFeed properties={displayProperties} />
 
         {/* Trending Section */}
-        <section className="mt-12 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
+        <section className="mt-12 rounded-2xl p-8 shadow-lg relative overflow-hidden" 
+          style={{ 
+            backgroundColor: '#FFFAF0',
+            border: `2px solid ${NEPALI.gold}`
+          }}>
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-10" 
+            style={{ background: `radial-gradient(circle at 100% 0%, ${NEPALI.primary} 0%, transparent 70%)` }} />
+          
           <div className="flex items-center gap-3 mb-6">
-            <div className={`w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center`}>
-              <TrendingUp size={20} className="text-amber-600" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: NEPALI.creamDark, border: `2px solid ${NEPALI.gold}` }}>
+              <TrendingUp size={20} style={{ color: NEPALI.saffron }} />
             </div>
             <div>
-              <h2 className="font-luxury text-xl font-semibold text-slate-800">Trending Now</h2>
-              <p className="text-sm text-slate-500">Most viewed in the last 24 hours</p>
+              <h2 className="font-luxury text-xl font-semibold" style={{ color: NEPALI.primary }}>Trending Now</h2>
+              <p className="text-sm" style={{ color: NEPALI.textMuted }}>Most viewed in the last 24 hours</p>
             </div>
           </div>
 
@@ -211,21 +255,27 @@ export default function HomePage() {
               <Link
                 key={property.id}
                 to={`/property/${property.id}`}
-                className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
+                className="flex items-center gap-4 p-3 rounded-xl transition-all hover:shadow-md group"
+                style={{ 
+                  backgroundColor: '#FFFDF9',
+                  border: `2px solid ${NEPALI.creamDark}`
+                }}
               >
-                <span className={`w-8 h-8 rounded-full ${colors.primaryBgLight} ${colors.primaryText} flex items-center justify-center font-semibold text-sm`}>
+                <span className="w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm text-white"
+                  style={{ background: `linear-gradient(135deg, ${NEPALI.primary} 0%, #A52A2A 100%)` }}>
                   {idx + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-slate-800 truncate group-hover:text-slate-600">
+                  <h4 className="font-medium truncate group-hover:underline" style={{ color: NEPALI.text }}>
                     {property.title}
                   </h4>
-                  <p className="text-sm text-slate-500">{property.city}</p>
+                  <p className="text-sm" style={{ color: NEPALI.textMuted }}>{property.city}</p>
                 </div>
                 <img 
                   src={property.image} 
                   alt={property.title}
                   className="w-12 h-12 rounded-lg object-cover"
+                  style={{ border: `2px solid ${NEPALI.creamDark}` }}
                 />
               </Link>
             ))}
@@ -233,10 +283,13 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className={`mt-12 rounded-2xl p-8 md:p-12 ${colors.gradient} text-white overflow-hidden relative`}>
+        <section className="mt-12 rounded-2xl p-8 md:p-12 text-white overflow-hidden relative"
+          style={{ background: `linear-gradient(135deg, ${NEPALI.primary} 0%, ${NEPALI.primaryDark} 100%)` }}>
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl" 
+              style={{ backgroundColor: NEPALI.gold }} />
+            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-3xl"
+              style={{ backgroundColor: NEPALI.saffron }} />
           </div>
           
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
@@ -244,6 +297,9 @@ export default function HomePage() {
               <h2 className="font-luxury text-2xl md:text-3xl font-semibold mb-2">
                 {isIndigo ? 'Ready to Make an Offer?' : 'Found Your Next Home?'}
               </h2>
+              <p className="text-sm mb-1" style={{ color: NEPALI.gold }}>
+                {isIndigo ? 'प्रस्ताव दिन तयार हुनुहुन्छ?' : 'तपाईंको नयाँ घर भेट्टाउनुभयो?'}
+              </p>
               <p className="text-white/80">
                 {isIndigo 
                   ? 'Our Smart Escrow system ensures secure, transparent transactions.'
@@ -253,7 +309,11 @@ export default function HomePage() {
             </div>
             <Link
               to="/search"
-              className="flex items-center gap-2 px-6 py-3 bg-white text-slate-800 rounded-xl font-semibold hover:bg-slate-50 transition-colors whitespace-nowrap"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:shadow-lg whitespace-nowrap"
+              style={{ 
+                backgroundColor: NEPALI.gold,
+                color: NEPALI.text
+              }}
             >
               Get Started <ArrowRight size={18} />
             </Link>

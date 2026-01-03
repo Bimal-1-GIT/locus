@@ -14,6 +14,19 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import AuraScore from './AuraScore';
 
+// Nepali Theme Colors
+const NEPALI = {
+  primary: '#8B0000',
+  primaryDark: '#5C0000',
+  gold: '#D4AF37',
+  saffron: '#FF9933',
+  cream: '#FDF5E6',
+  creamDark: '#F5E6D3',
+  brown: '#CD853F',
+  text: '#2F1810',
+  textMuted: '#6B4423',
+};
+
 export default function PropertyCard({ property, variant = 'default', initialSaved = false, onSaveChange }) {
   const [isLiked, setIsLiked] = useState(initialSaved || property.isSaved || false);
   const { isAuthenticated } = useAuth();
@@ -89,7 +102,8 @@ export default function PropertyCard({ property, variant = 'default', initialSav
     return (
       <Link 
         to={`/property/${property.id}`}
-        className="group block relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bento-item col-span-2 row-span-2"
+        className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bento-item col-span-2 row-span-2"
+        style={{ backgroundColor: '#FFFAF0', border: `2px solid ${NEPALI.gold}` }}
       >
         {/* Image */}
         <div className="relative h-80 overflow-hidden">
@@ -104,13 +118,15 @@ export default function PropertyCard({ property, variant = 'default', initialSav
             <>
               <button 
                 onClick={prevImage}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ backgroundColor: 'rgba(255, 250, 240, 0.95)', color: NEPALI.primary }}
               >
                 <ChevronLeft size={18} />
               </button>
               <button 
                 onClick={nextImage}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ backgroundColor: 'rgba(255, 250, 240, 0.95)', color: NEPALI.primary }}
               >
                 <ChevronRight size={18} />
               </button>
@@ -119,9 +135,8 @@ export default function PropertyCard({ property, variant = 'default', initialSav
                 {images.map((_, idx) => (
                   <span 
                     key={idx}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                      idx === currentImage ? 'bg-white' : 'bg-white/50'
-                    }`}
+                    className="w-1.5 h-1.5 rounded-full transition-colors"
+                    style={{ backgroundColor: idx === currentImage ? NEPALI.gold : 'rgba(255,255,255,0.5)' }}
                   />
                 ))}
               </div>
@@ -130,11 +145,8 @@ export default function PropertyCard({ property, variant = 'default', initialSav
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex gap-2">
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              property.type === 'sale' 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-sage-400 text-white'
-            }`}>
+            <span className="px-3 py-1 rounded-full text-xs font-semibold text-white"
+              style={{ backgroundColor: property.type === 'sale' ? NEPALI.primary : NEPALI.brown }}>
               {property.type === 'sale' ? 'For Sale' : 'For Rent'}
             </span>
           </div>
@@ -142,11 +154,11 @@ export default function PropertyCard({ property, variant = 'default', initialSav
           {/* Like button */}
           <button
             onClick={handleSave}
-            className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              isLiked 
-                ? 'bg-rose-500 text-white' 
-                : 'bg-white/90 text-slate-600 hover:text-rose-500'
-            }`}
+            className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+            style={{ 
+              backgroundColor: isLiked ? NEPALI.primary : 'rgba(255, 250, 240, 0.95)',
+              color: isLiked ? 'white' : NEPALI.textMuted
+            }}
           >
             <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
           </button>
@@ -160,21 +172,21 @@ export default function PropertyCard({ property, variant = 'default', initialSav
         {/* Content */}
         <div className="p-5">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-luxury text-xl font-semibold text-slate-800 group-hover:text-slate-600 transition-colors">
+            <h3 className="font-luxury text-xl font-semibold transition-colors" style={{ color: NEPALI.text }}>
               {property.title}
             </h3>
-            <span className={`text-xl font-bold ${colors.primaryText}`}>
+            <span className="text-xl font-bold" style={{ color: NEPALI.primary }}>
               {formatPrice(property.price, property.priceType)}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-slate-500 mb-4">
+          <div className="flex items-center gap-1 mb-4" style={{ color: NEPALI.textMuted }}>
             <MapPin size={14} />
             <span className="text-sm">{property.address}</span>
           </div>
 
           {/* Stats */}
-          <div className="flex items-center gap-4 text-slate-600">
+          <div className="flex items-center gap-4" style={{ color: NEPALI.textMuted }}>
             <div className="flex items-center gap-1.5">
               <Bed size={16} />
               <span className="text-sm">{property.bedrooms === 0 ? 'Studio' : `${property.bedrooms} Beds`}</span>
@@ -194,13 +206,14 @@ export default function PropertyCard({ property, variant = 'default', initialSav
             {property.features.slice(0, 4).map((feature, idx) => (
               <span 
                 key={idx}
-                className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-md"
+                className="px-2 py-1 text-xs rounded-md"
+                style={{ backgroundColor: NEPALI.creamDark, color: NEPALI.textMuted }}
               >
                 {feature}
               </span>
             ))}
             {property.features.length > 4 && (
-              <span className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-md">
+              <span className="px-2 py-1 text-xs rounded-md" style={{ backgroundColor: NEPALI.creamDark, color: NEPALI.textMuted }}>
                 +{property.features.length - 4} more
               </span>
             )}
@@ -214,7 +227,8 @@ export default function PropertyCard({ property, variant = 'default', initialSav
   return (
     <Link 
       to={`/property/${property.id}`}
-      className="group block relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bento-item"
+      className="group block relative rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bento-item"
+      style={{ backgroundColor: '#FFFAF0', border: `2px solid ${NEPALI.gold}` }}
     >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
@@ -225,22 +239,19 @@ export default function PropertyCard({ property, variant = 'default', initialSav
         />
         
         {/* Badge */}
-        <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold ${
-          property.type === 'sale' 
-            ? 'bg-indigo-600 text-white' 
-            : 'bg-sage-400 text-white'
-        }`}>
+        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+          style={{ backgroundColor: property.type === 'sale' ? NEPALI.primary : NEPALI.brown }}>
           {property.type === 'sale' ? 'For Sale' : 'For Rent'}
         </span>
 
         {/* Like button */}
         <button
           onClick={handleSave}
-          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-            isLiked 
-              ? 'bg-rose-500 text-white' 
-              : 'bg-white/90 text-slate-600 hover:text-rose-500'
-          }`}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+          style={{ 
+            backgroundColor: isLiked ? NEPALI.primary : 'rgba(255, 250, 240, 0.95)',
+            color: isLiked ? 'white' : NEPALI.textMuted
+          }}
         >
           <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
         </button>
@@ -254,26 +265,26 @@ export default function PropertyCard({ property, variant = 'default', initialSav
       {/* Content */}
       <div className="p-4">
         <div className="flex items-start justify-between mb-1">
-          <h3 className="font-medium text-slate-800 line-clamp-1">
+          <h3 className="font-medium line-clamp-1" style={{ color: NEPALI.text }}>
             {property.title}
           </h3>
         </div>
         
-        <span className={`text-lg font-bold ${colors.primaryText}`}>
+        <span className="text-lg font-bold" style={{ color: NEPALI.primary }}>
           {formatPrice(property.price, property.priceType)}
         </span>
 
-        <div className="flex items-center gap-1 text-slate-400 mt-1 mb-3">
+        <div className="flex items-center gap-1 mt-1 mb-3" style={{ color: NEPALI.textMuted }}>
           <MapPin size={12} />
           <span className="text-xs line-clamp-1">{property.city}</span>
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-3 text-slate-500 text-sm">
+        <div className="flex items-center gap-3 text-sm" style={{ color: NEPALI.textMuted }}>
           <span>{property.bedrooms === 0 ? 'Studio' : `${property.bedrooms} bd`}</span>
-          <span>•</span>
+          <span style={{ color: NEPALI.gold }}>•</span>
           <span>{property.bathrooms} ba</span>
-          <span>•</span>
+          <span style={{ color: NEPALI.gold }}>•</span>
           <span>{property.sqft.toLocaleString()} sqft</span>
         </div>
       </div>
