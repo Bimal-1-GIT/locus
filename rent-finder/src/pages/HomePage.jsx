@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ArrowRight, TrendingUp, Building2, Key, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowRight, TrendingUp, Building2, Key, Sparkles, Loader2, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useMode } from '../context/ModeContext';
 import SmartMatchSearch from '../components/SmartMatchSearch';
 import PropertyCard from '../components/PropertyCard';
 import DiscoveryFeed from '../components/DiscoveryFeed';
@@ -22,7 +21,6 @@ const NEPALI = {
 };
 
 export default function HomePage() {
-  const { colors, isIndigo, isSage, toggleMode } = useMode();
   const [searchQuery, setSearchQuery] = useState('');
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,13 +61,8 @@ export default function HomePage() {
     fetchProperties();
   }, []);
 
-  // Filter properties based on mode
-  const filteredProperties = isIndigo 
-    ? properties.filter(p => p.type === 'sale')
-    : properties.filter(p => p.type === 'rent');
-  
-  // If no filtered results, show all
-  const displayProperties = filteredProperties.length > 0 ? filteredProperties : properties;
+  // Show all properties (both rent and sale)
+  const displayProperties = properties;
 
   const featuredProperty = displayProperties[0];
   const otherProperties = displayProperties.slice(1);
@@ -103,48 +96,16 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto">
-          {/* Mode indicator */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
-              style={{ 
-                backgroundColor: 'rgba(255, 250, 240, 0.9)',
-                border: `2px solid ${NEPALI.gold}`,
-                backdropFilter: 'blur(8px)'
-              }}>
-              {isIndigo ? (
-                <>
-                  <Building2 size={18} style={{ color: NEPALI.primary }} />
-                  <span className="text-sm font-medium" style={{ color: NEPALI.primary }}>Buyer & Seller Mode</span>
-                </>
-              ) : (
-                <>
-                  <Key size={18} style={{ color: NEPALI.brown }} />
-                  <span className="text-sm font-medium" style={{ color: NEPALI.brown }}>Renter & Landlord Mode</span>
-                </>
-              )}
-              <button 
-                onClick={toggleMode}
-                className="ml-2 text-xs underline hover:no-underline"
-                style={{ color: NEPALI.textMuted }}
-              >
-                Switch
-              </button>
-            </div>
-          </div>
-
           {/* Hero content */}
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h1 className="font-luxury text-4xl md:text-5xl lg:text-6xl font-semibold mb-4" style={{ color: NEPALI.primary }}>
-              {isIndigo ? 'Find Your Dream Home' : 'Discover Your Perfect Rental'}
+              Find Your Perfect Property
             </h1>
             <p className="text-sm mb-1" style={{ color: NEPALI.gold }}>
-              {isIndigo ? 'सपनाको घर खोज्नुहोस्' : 'उत्तम भाडाको घर पत्ता लगाउनुहोस्'}
+              सपनाको घर खोज्नुहोस्
             </p>
             <p className="text-lg mb-8" style={{ color: NEPALI.textMuted }}>
-              {isIndigo 
-                ? 'Browse exclusive properties with our AI-powered search. From luxury penthouses to charming townhouses.'
-                : 'Explore curated rentals tailored to your lifestyle. Quick applications, verified listings.'
-              }
+              Browse properties for rent or sale with our AI-powered search. From cozy apartments to luxury homes.
             </p>
 
             {/* SmartMatch Search */}
@@ -295,16 +256,13 @@ export default function HomePage() {
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h2 className="font-luxury text-2xl md:text-3xl font-semibold mb-2">
-                {isIndigo ? 'Ready to Make an Offer?' : 'Found Your Next Home?'}
+                Ready to Find Your Next Home?
               </h2>
               <p className="text-sm mb-1" style={{ color: NEPALI.gold }}>
-                {isIndigo ? 'प्रस्ताव दिन तयार हुनुहुन्छ?' : 'तपाईंको नयाँ घर भेट्टाउनुभयो?'}
+                तपाईंको नयाँ घर भेट्टाउनुहोस्
               </p>
               <p className="text-white/80">
-                {isIndigo 
-                  ? 'Our Smart Escrow system ensures secure, transparent transactions.'
-                  : 'Apply instantly with our one-click application system.'
-                }
+                Browse rentals or properties for sale. Apply instantly or make an offer with our secure platform.
               </p>
             </div>
             <Link
