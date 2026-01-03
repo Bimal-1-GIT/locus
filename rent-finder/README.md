@@ -1,16 +1,226 @@
-# React + Vite
+# 🏔️ Locus - Nepal Real Estate Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern real estate platform for Nepal, featuring AI-powered property search, beautiful Nepali-inspired design, and seamless property management for both renters and buyers.
 
-Currently, two official plugins are available:
+![Locus](https://img.shields.io/badge/Locus-Nepal%20Real%20Estate-8B0000?style=for-the-badge)
+![React](https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+### For Property Seekers
+- 🔍 **Smart AI Search** - Natural language property search powered by Google Gemini
+- 🏠 **Unified Listings** - Browse both rental and sale properties in one place
+- 💬 **AI Chatbot Assistant** - Get instant help with Locus Assistant (लोकस सहायक)
+- ❤️ **Save Favorites** - Keep track of properties you love
+- 📱 **Responsive Design** - Beautiful on all devices
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### For Property Owners
+- 📝 **Easy Listing Creation** - List your property in minutes
+- 📸 **Image Upload** - Showcase your property with multiple photos
+- 📊 **Manage Listings** - Edit, update, or remove listings anytime
+- 💌 **Direct Messaging** - Connect with potential tenants/buyers
 
-## Expanding the ESLint configuration
+### Platform Features
+- 🎨 **Nepali-Inspired Design** - Beautiful maroon, gold, and cream color scheme
+- 🔐 **Secure Authentication** - JWT-based auth with encrypted passwords
+- 🤖 **AI-Powered** - Smart match search and conversational chatbot
+- 📍 **Nepal-Focused** - Coverage across Kathmandu Valley, Pokhara, and more
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/locus.git
+   cd locus/rent-finder
+   ```
+
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install backend dependencies**
+   ```bash
+   cd server
+   npm install
+   ```
+
+4. **Set up environment variables**
+   ```bash
+   # In the server folder, copy the example env file
+   cp .env.example .env
+   ```
+
+   Edit `.env` with your configuration:
+   ```env
+   DATABASE_URL="file:./dev.db"
+   JWT_SECRET="your-secret-key"
+   GEMINI_API_KEY="your-gemini-api-key"  # Get from https://aistudio.google.com/app/apikey
+   ```
+
+5. **Initialize the database**
+   ```bash
+   # In the server folder
+   npm run db:push
+   npm run db:seed  # Optional: seed with sample data
+   ```
+
+6. **Start the development servers**
+
+   Terminal 1 - Backend:
+   ```bash
+   cd server
+   cd src
+   node index.js
+   ```
+
+   Terminal 2 - Frontend:
+   ```bash
+   # In rent-finder folder
+   npm run dev
+   ```
+
+7. **Open the app**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3001
+
+## 📁 Project Structure
+
+```
+rent-finder/
+├── src/                    # Frontend React application
+│   ├── components/         # Reusable UI components
+│   │   ├── Chatbot.jsx     # AI assistant chatbot
+│   │   ├── Header.jsx      # Navigation header
+│   │   ├── PropertyCard.jsx
+│   │   ├── SmartMatchSearch.jsx
+│   │   └── ...
+│   ├── pages/              # Page components
+│   │   ├── HomePage.jsx
+│   │   ├── SearchPage.jsx
+│   │   ├── PropertyDetailPage.jsx
+│   │   ├── ListPropertyPage.jsx
+│   │   └── ...
+│   ├── context/            # React context providers
+│   ├── services/           # API client services
+│   └── main.jsx            # App entry point
+│
+├── server/                 # Backend Express API
+│   ├── src/
+│   │   ├── index.js        # Server entry point
+│   │   ├── routes/         # API route handlers
+│   │   │   ├── auth.js
+│   │   │   ├── properties.js
+│   │   │   ├── chatbot.js
+│   │   │   └── ...
+│   │   └── middleware/     # Express middleware
+│   ├── prisma/
+│   │   ├── schema.prisma   # Database schema
+│   │   └── seed.js         # Database seeder
+│   └── uploads/            # Uploaded images
+│
+└── public/                 # Static assets
+```
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 19** - UI framework
+- **React Router 7** - Client-side routing
+- **Tailwind CSS 4** - Styling
+- **Lucide React** - Icons
+- **Vite 7** - Build tool
+
+### Backend
+- **Express.js** - Web framework
+- **Prisma** - Database ORM
+- **SQLite** - Database (easily switch to PostgreSQL)
+- **JWT** - Authentication
+- **Google Gemini** - AI chatbot
+- **Multer** - File uploads
+
+## 📡 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Create new account
+- `POST /api/auth/login` - Sign in
+- `GET /api/auth/me` - Get current user
+
+### Properties
+- `GET /api/properties` - List properties (with filters)
+- `GET /api/properties/:id` - Get property details
+- `POST /api/properties` - Create listing (auth required)
+- `PUT /api/properties/:id` - Update listing (auth required)
+- `DELETE /api/properties/:id` - Delete listing (auth required)
+
+### Other
+- `POST /api/chatbot` - AI chatbot endpoint
+- `POST /api/upload` - Image upload
+- `GET /api/messages` - User messages
+
+## 🎨 Design System
+
+The platform uses a Nepali-inspired color palette:
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary (Maroon) | `#8B0000` | Headers, buttons, accents |
+| Gold | `#D4AF37` | Highlights, borders |
+| Cream | `#FDF5E6` | Backgrounds |
+| Saffron | `#FF9933` | Accents, icons |
+| Brown | `#CD853F` | Secondary text |
+
+## 🤖 AI Features
+
+### Smart Match Search
+Natural language property search - just describe what you're looking for:
+> "3 bedroom apartment in Kathmandu under 50,000 NPR"
+
+### Locus Assistant (Chatbot)
+AI-powered assistant that can:
+- Help find properties
+- Explain the listing process
+- Answer questions about Nepal real estate
+- Guide users through the platform
+
+## 📝 Scripts
+
+### Frontend
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
+```
+
+### Backend
+```bash
+npm run dev        # Start with nodemon
+npm start          # Production start
+npm run db:push    # Push schema to database
+npm run db:studio  # Open Prisma Studio
+npm run db:seed    # Seed database
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+<p align="center">
+  Made with ❤️ for Nepal 🇳🇵
+</p>
