@@ -30,10 +30,65 @@ A modern real estate platform for Nepal, featuring AI-powered property search, b
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Prerequisites & Requirements
 
-- Node.js 18+ 
-- npm or yarn
+Before running Locus, make sure you have the following installed:
+
+#### Required Software
+
+| Software | Version | Download Link | Purpose |
+|----------|---------|---------------|---------|
+| **Node.js** | 18.0+ (LTS recommended) | [nodejs.org](https://nodejs.org/) | JavaScript runtime |
+| **npm** | 9.0+ (comes with Node.js) | Included with Node.js | Package manager |
+| **Git** | Latest | [git-scm.com](https://git-scm.com/) | Version control |
+
+#### Required API Keys
+
+| Service | Purpose | Get Key From |
+|---------|---------|--------------|
+| **Google Gemini API** | AI chatbot & smart search | [Google AI Studio](https://aistudio.google.com/app/apikey) |
+
+#### Frontend Dependencies (auto-installed via npm)
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| React | ^19.2.0 | UI framework |
+| React DOM | ^19.2.0 | React DOM rendering |
+| React Router DOM | ^7.11.0 | Client-side routing |
+| Lucide React | ^0.562.0 | Icon library |
+| Tailwind CSS | ^4.1.18 | Utility-first CSS framework |
+| Vite | ^7.2.4 | Build tool & dev server |
+| ESLint | ^9.39.1 | Code linting |
+
+#### Backend Dependencies (auto-installed via npm)
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| Express | ^4.21.0 | Web server framework |
+| Prisma Client | ^5.22.0 | Database ORM |
+| @google/generative-ai | ^0.24.1 | Google Gemini AI SDK |
+| bcryptjs | ^2.4.3 | Password hashing |
+| jsonwebtoken | ^9.0.2 | JWT authentication |
+| cors | ^2.8.5 | Cross-origin requests |
+| dotenv | ^16.4.5 | Environment variables |
+| multer | ^1.4.5-lts.1 | File upload handling |
+| express-validator | ^7.2.0 | Request validation |
+| uuid | ^10.0.0 | Unique ID generation |
+
+#### Development Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| Prisma CLI | Database migrations & studio |
+| Nodemon | Auto-restart server on changes |
+
+#### Optional but Recommended
+
+| Tool | Purpose | Download |
+|------|---------|----------|
+| **VS Code** | Code editor | [code.visualstudio.com](https://code.visualstudio.com/) |
+| **Postman** | API testing | [postman.com](https://www.postman.com/downloads/) |
+| **Prisma Studio** | Database GUI (included) | Run `npm run db:studio` |
 
 ### Installation
 
