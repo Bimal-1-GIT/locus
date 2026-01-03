@@ -1,14 +1,17 @@
-import { useState, useMemo } from 'react';
-import { Scale } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Scale, Loader2 } from 'lucide-react';
 import { useMode } from '../context/ModeContext';
 import SmartMatchSearch from '../components/SmartMatchSearch';
 import PropertyCard from '../components/PropertyCard';
 import FilterBar from '../components/FilterBar';
 import PropertyComparison from '../components/PropertyComparison';
-import { properties } from '../data/properties';
+import { api } from '../services/api';
 
 export default function SearchPage() {
   const { isIndigo, colors } = useMode();
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   const [showComparison, setShowComparison] = useState(false);
@@ -20,53 +23,84 @@ export default function SearchPage() {
     type: null
   });
 
-  // Filter properties
-  const filteredProperties = useMemo(() => {
-    let result = [...properties];
+  // Fetch properties from API
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
-    // Filter by type based on mode if not explicitly filtered
-    if (filters.type) {
-      result = result.filter(p => p.type === filters.type);
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.getProperties();
+      // Transform API response to match our component expectations
+      const transformedProperties = response.properties.map(p => ({
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        type: p.type,
+        listingType: p.listingType,
+        price: p.price,
+        address: `${p.address}, ${p.city}, ${p.state} ${p.zipCode}`,
+        city: p.city,
+        bedrooms: p.bedrooms,
+        bathrooms: p.bathrooms,
+        sqft: p.sqft,
+        image: p.images?.[0]?.url || 'https://picsum.photos/seed/default/800/600',
+        images: p.images?.map(img => img.url) || [],
+        features: p.features?.map(f => f.name) || [],
+        auraScore: p.auraScoreOverall || Math.floor(Math.random() * 20) + 80,
+        petFriendly: p.petFriendly,
+        availableFrom: p.availableFrom,
+        createdAt: p.createdAt
+      }));
+      setProperties(transformedProperties);
+    } catch (err) {
+      console.error('Failed to fetch properties:', err);
+      setError('Failed to load properties');
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Filter properties locally after fetching
+  const filteredProperties = properties.filter(p => {
+    // Filter by type
+    if (filters.type && p.type !== filters.type) return false;
 
     // Filter by price range
     if (filters.priceRange) {
-      result = result.filter(p => {
-        return p.price >= filters.priceRange.min && p.price <= filters.priceRange.max;
-      });
+      if (p.price < filters.priceRange.min || p.price > filters.priceRange.max) return false;
     }
 
     // Filter by bedrooms
     if (filters.bedrooms) {
-      result = result.filter(p => {
-        if (filters.bedrooms === 'Studio') return p.bedrooms === 0;
-        if (filters.bedrooms === '4+') return p.bedrooms >= 4;
-        return p.bedrooms === parseInt(filters.bedrooms);
-      });
+      if (filters.bedrooms === 'Studio' && p.bedrooms !== 0) return false;
+      if (filters.bedrooms === '4+' && p.bedrooms < 4) return false;
+      if (!isNaN(parseInt(filters.bedrooms)) && p.bedrooms !== parseInt(filters.bedrooms)) return false;
     }
 
     // Filter by features
     if (filters.features?.length > 0) {
-      result = result.filter(p => 
-        filters.features.every(f => 
-          p.features.some(pf => pf.toLowerCase().includes(f.toLowerCase()))
-        )
+      const hasAllFeatures = filters.features.every(f =>
+        p.features?.some(pf => pf.toLowerCase().includes(f.toLowerCase()))
       );
+      if (!hasAllFeatures) return false;
     }
 
-    // Simple text search
+    // Text search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(p => 
-        p.title.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query) ||
-        p.address.toLowerCase().includes(query) ||
-        p.features.some(f => f.toLowerCase().includes(query))
-      );
+      const matchesSearch = 
+        p.title?.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.address?.toLowerCase().includes(query) ||
+        p.features?.some(f => f.toLowerCase().includes(query));
+      if (!matchesSearch) return false;
     }
 
-    return result;
-  }, [filters, searchQuery, isIndigo]);
+    return true;
+  });
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -144,7 +178,26 @@ export default function SearchPage() {
         )}
 
         {/* Results */}
-        {filteredProperties.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16">
+            <Loader2 className="w-12 h-12 animate-spin text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-500">Loading properties...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+              <Scale size={32} className="text-red-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-slate-800 mb-2">Error loading properties</h3>
+            <p className="text-slate-500 mb-4">{error}</p>
+            <button 
+              onClick={fetchProperties}
+              className={`px-4 py-2 rounded-lg ${colors.primaryBg} text-white`}
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filteredProperties.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
               <Scale size={32} className="text-slate-400" />

@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Heart, 
@@ -16,49 +16,146 @@ import {
   MessageSquare,
   Phone,
   Shield,
-  Zap
+  Zap,
+  Loader2,
+  Edit,
+  User
 } from 'lucide-react';
 import { useMode } from '../context/ModeContext';
+import { useAuth } from '../context/AuthContext';
 import AuraScore from '../components/AuraScore';
-import { properties } from '../data/properties';
+import { api } from '../services/api';
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { colors, isIndigo } = useMode();
+  const { user, isAuthenticated } = useAuth();
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-  const property = useMemo(() => {
-    return properties.find(p => p.id === parseInt(id));
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await api.getProperty(id);
+        
+        // Transform property data
+        const p = response.property;
+        const transformedProperty = {
+          id: p.id,
+          title: p.title,
+          description: p.description,
+          type: p.listingType === 'RENT' ? 'rent' : 'sale',
+          listingType: p.listingType,
+          priceType: p.priceType,
+          price: p.price,
+          deposit: p.deposit,
+          address: `${p.address}, ${p.city}, ${p.state} ${p.zipCode}`,
+          city: p.city,
+          state: p.state,
+          zipCode: p.zipCode,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          sqft: p.sqft,
+          images: p.images?.map(img => img.url) || ['https://picsum.photos/seed/default/800/600'],
+          features: p.features?.map(f => f.name) || [],
+          auraScore: p.auraScoreOverall || Math.floor(Math.random() * 20) + 80,
+          petFriendly: p.petFriendly,
+          parking: p.parking || 'Not specified',
+          available: p.availableFrom ? new Date(p.availableFrom).toLocaleDateString() : 'Now',
+          owner: p.owner,
+          ownerId: p.ownerId,
+          createdAt: p.createdAt,
+          viewCount: p.viewCount || 0
+        };
+        
+        setProperty(transformedProperty);
+        setIsLiked(p.isSaved || false);
+      } catch (err) {
+        console.error('Failed to fetch property:', err);
+        setError('Property not found');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProperty();
+    }
   }, [id]);
 
-  if (!property) {
+  const formatPrice = (price, priceType, type) => {
+    const isRental = priceType === 'MONTHLY' || priceType === 'monthly' || priceType === 'month' || type === 'rent';
+    if (isRental) {
+      return `$${price.toLocaleString()}/month`;
+    }
+    if (price >= 1000000) {
+      return `$${(price / 1000000).toFixed(2)}M`;
+    }
+    return `$${price.toLocaleString()}`;
+  };
+
+  const nextImage = () => {
+    if (property?.images?.length > 1) {
+      setCurrentImage((prev) => (prev + 1) % property.images.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (property?.images?.length > 1) {
+      setCurrentImage((prev) => (prev - 1 + property.images.length) % property.images.length);
+    }
+  };
+
+  const handleSaveProperty = async () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: `/property/${id}` } } });
+      return;
+    }
+    
+    try {
+      if (isLiked) {
+        await api.unsaveProperty(id);
+      } else {
+        await api.saveProperty(id);
+      }
+      setIsLiked(!isLiked);
+    } catch (err) {
+      console.error('Failed to save property:', err);
+    }
+  };
+
+  const isOwner = isAuthenticated && user?.id === property?.ownerId;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-slate-400 mx-auto mb-4" />
+          <p className="text-slate-600">Loading property details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !property) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-slate-800 mb-4">Property not found</h2>
-          <Link to="/" className={`${colors.primaryText} hover:underline`}>
+          <p className="text-slate-600 mb-6">The property you're looking for doesn't exist or has been removed.</p>
+          <Link to="/" className={`${colors.primaryBg} text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity`}>
             Return to home
           </Link>
         </div>
       </div>
     );
   }
-
-  const formatPrice = (price, priceType) => {
-    if (priceType === 'month') {
-      return `$${price.toLocaleString()}/month`;
-    }
-    return `$${price.toLocaleString()}`;
-  };
-
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % property.images.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImage((prev) => (prev - 1 + property.images.length) % property.images.length);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -74,8 +171,17 @@ export default function PropertyDetailPage() {
               <span>Back to search</span>
             </Link>
             <div className="flex items-center gap-2">
+              {isOwner && (
+                <Link
+                  to={`/edit-listing/${property.id}`}
+                  className="p-2 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 transition-colors flex items-center gap-2"
+                >
+                  <Edit size={18} />
+                  <span className="text-sm font-medium">Edit</span>
+                </Link>
+              )}
               <button
-                onClick={() => setIsLiked(!isLiked)}
+                onClick={handleSaveProperty}
                 className={`p-2 rounded-lg transition-colors ${
                   isLiked 
                     ? 'bg-rose-100 text-rose-600' 
@@ -164,10 +270,10 @@ export default function PropertyDetailPage() {
                 </div>
                 <div className="text-right">
                   <p className={`text-3xl font-bold ${colors.primaryText}`}>
-                    {formatPrice(property.price, property.priceType)}
+                    {formatPrice(property.price, property.priceType, property.type)}
                   </p>
-                  {property.priceType === 'month' && (
-                    <p className="text-sm text-slate-500">+ utilities</p>
+                  {property.type === 'rent' && property.deposit && (
+                    <p className="text-sm text-slate-500">Deposit: ${property.deposit.toLocaleString()}</p>
                   )}
                 </div>
               </div>
@@ -186,30 +292,32 @@ export default function PropertyDetailPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Square size={20} className="text-slate-400" />
-                  <span className="font-medium text-slate-800">{property.sqft.toLocaleString()} sqft</span>
+                  <span className="font-medium text-slate-800">{property.sqft?.toLocaleString() || 'N/A'} sqft</span>
                 </div>
               </div>
 
               {/* Description */}
               <div className="py-4">
                 <h3 className="font-semibold text-slate-800 mb-2">About this property</h3>
-                <p className="text-slate-600 leading-relaxed">{property.description}</p>
+                <p className="text-slate-600 leading-relaxed">{property.description || 'No description available.'}</p>
               </div>
 
               {/* Features */}
-              <div className="py-4 border-t border-slate-100">
-                <h3 className="font-semibold text-slate-800 mb-3">Features & Amenities</h3>
-                <div className="flex flex-wrap gap-2">
-                  {property.features.map((feature, idx) => (
-                    <span 
-                      key={idx}
-                      className={`px-3 py-1.5 ${colors.primaryBgLight} ${colors.primaryText} rounded-full text-sm font-medium`}
-                    >
-                      {feature}
-                    </span>
-                  ))}
+              {property.features.length > 0 && (
+                <div className="py-4 border-t border-slate-100">
+                  <h3 className="font-semibold text-slate-800 mb-3">Features & Amenities</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {property.features.map((feature, idx) => (
+                      <span 
+                        key={idx}
+                        className={`px-3 py-1.5 ${colors.primaryBgLight} ${colors.primaryText} rounded-full text-sm font-medium`}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Additional Info */}
               <div className="py-4 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -244,6 +352,35 @@ export default function PropertyDetailPage() {
           <div className="space-y-6">
             {/* Aura Score */}
             <AuraScore score={property.auraScore} />
+
+            {/* Owner Info */}
+            {property.owner && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
+                <h3 className="font-semibold text-slate-800 mb-4">Listed by</h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center">
+                    {property.owner.avatar ? (
+                      <img src={property.owner.avatar} alt="" className="w-12 h-12 rounded-full object-cover" />
+                    ) : (
+                      <User size={24} className="text-slate-400" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-800">
+                      {property.owner.firstName} {property.owner.lastName}
+                    </p>
+                    {property.owner.landlordProfile?.isVerified && (
+                      <span className="text-xs text-green-600 font-medium">✓ Verified Landlord</span>
+                    )}
+                  </div>
+                </div>
+                {property.owner.landlordProfile?.responseRate && (
+                  <p className="text-sm text-slate-500">
+                    Response rate: {property.owner.landlordProfile.responseRate}%
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Contact Card */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">

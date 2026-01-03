@@ -10,7 +10,9 @@ import {
   X,
   Building2,
   Key,
-  LogIn
+  LogIn,
+  Plus,
+  LayoutList
 } from 'lucide-react';
 import { useMode } from '../context/ModeContext';
 import { useAuth } from '../context/AuthContext';
@@ -27,6 +29,11 @@ export default function Header() {
     { path: '/saved', label: 'Saved', icon: Heart },
     { path: '/messages', label: 'Messages', icon: MessageSquare },
   ];
+
+  // Add My Listings for authenticated users
+  const authNavLinks = isAuthenticated 
+    ? [...navLinks, { path: '/my-listings', label: 'My Listings', icon: LayoutList }]
+    : navLinks;
 
   const isActive = (path) => location.pathname === path;
 
@@ -46,7 +53,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map(({ path, label, icon: Icon }) => (
+            {authNavLinks.map(({ path, label, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
@@ -64,6 +71,19 @@ export default function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-3">
+            {/* List Property Button */}
+            <Link
+              to="/list-property"
+              className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors border ${
+                isIndigo 
+                  ? 'border-indigo-200 text-indigo-700 hover:bg-indigo-50' 
+                  : 'border-sage-200 text-sage-700 hover:bg-sage-50'
+              }`}
+            >
+              <Plus size={18} />
+              <span>List Property</span>
+            </Link>
+
             {/* Mode Toggle */}
             <button
               onClick={toggleMode}
@@ -124,7 +144,7 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t border-slate-200 bg-white">
           <nav className="px-4 py-2 space-y-1">
-            {navLinks.map(({ path, label, icon: Icon }) => (
+            {authNavLinks.map(({ path, label, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
@@ -139,6 +159,18 @@ export default function Header() {
                 <span>{label}</span>
               </Link>
             ))}
+            <Link
+              to="/list-property"
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isIndigo 
+                  ? 'text-indigo-600 bg-indigo-50' 
+                  : 'text-sage-600 bg-sage-50'
+              }`}
+            >
+              <Plus size={20} />
+              <span>List Property</span>
+            </Link>
           </nav>
         </div>
       )}

@@ -1,26 +1,64 @@
-import { useState, useMemo } from 'react';
-import { ArrowRight, TrendingUp, Building2, Key, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowRight, TrendingUp, Building2, Key, Sparkles, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMode } from '../context/ModeContext';
 import SmartMatchSearch from '../components/SmartMatchSearch';
 import PropertyCard from '../components/PropertyCard';
 import DiscoveryFeed from '../components/DiscoveryFeed';
-import { properties } from '../data/properties';
+import { api } from '../services/api';
 
 export default function HomePage() {
   const { colors, isIndigo, isSage, toggleMode } = useMode();
   const [searchQuery, setSearchQuery] = useState('');
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch properties from API
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
+        const response = await api.getProperties({ limit: 8 });
+        const transformedProperties = response.properties.map(p => ({
+          id: p.id,
+          title: p.title,
+          description: p.description,
+          type: p.listingType === 'RENT' ? 'rent' : 'sale',
+          listingType: p.listingType,
+          price: p.price,
+          address: `${p.address}, ${p.city}, ${p.state} ${p.zipCode}`,
+          city: p.city,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          sqft: p.sqft,
+          image: p.images?.[0]?.url || 'https://picsum.photos/seed/default/800/600',
+          images: p.images?.map(img => img.url) || [],
+          features: p.features?.map(f => f.name) || [],
+          auraScore: p.auraScoreOverall || Math.floor(Math.random() * 20) + 80,
+          petFriendly: p.petFriendly,
+          availableFrom: p.availableFrom,
+          createdAt: p.createdAt
+        }));
+        setProperties(transformedProperties);
+      } catch (err) {
+        console.error('Failed to fetch properties:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   // Filter properties based on mode
-  const filteredProperties = useMemo(() => {
-    if (isIndigo) {
-      return properties.filter(p => p.type === 'sale');
-    }
-    return properties.filter(p => p.type === 'rent');
-  }, [isIndigo]);
+  const filteredProperties = isIndigo 
+    ? properties.filter(p => p.type === 'sale')
+    : properties.filter(p => p.type === 'rent');
+  
+  // If no filtered results, show all
+  const displayProperties = filteredProperties.length > 0 ? filteredProperties : properties;
 
-  const featuredProperty = filteredProperties[0];
-  const otherProperties = filteredProperties.slice(1);
+  const featuredProperty = displayProperties[0];
+  const otherProperties = displayProperties.slice(1);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -122,23 +160,39 @@ export default function HomePage() {
           </div>
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Featured large card */}
-            {featuredProperty && (
-              <div className="md:col-span-2 md:row-span-2">
-                <PropertyCard property={featuredProperty} variant="featured" />
-              </div>
-            )}
-            
-            {/* Smaller cards */}
-            {otherProperties.slice(0, 4).map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            </div>
+          ) : displayProperties.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-slate-500">No properties available yet. Be the first to list!</p>
+              <Link 
+                to="/list-property"
+                className={`inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-lg ${colors.primaryBg} text-white font-medium`}
+              >
+                List a Property
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Featured large card */}
+              {featuredProperty && (
+                <div className="md:col-span-2 md:row-span-2">
+                  <PropertyCard property={featuredProperty} variant="featured" />
+                </div>
+              )}
+              
+              {/* Smaller cards */}
+              {otherProperties.slice(0, 4).map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Discovery Feed */}
-        <DiscoveryFeed properties={filteredProperties} />
+        <DiscoveryFeed properties={displayProperties} />
 
         {/* Trending Section */}
         <section className="mt-12 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
@@ -153,7 +207,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredProperties.slice(0, 4).map((property, idx) => (
+            {displayProperties.slice(0, 4).map((property, idx) => (
               <Link
                 key={property.id}
                 to={`/property/${property.id}`}

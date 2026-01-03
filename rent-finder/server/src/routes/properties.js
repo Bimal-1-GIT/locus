@@ -149,6 +149,28 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
+// GET /api/properties/my-listings - Get current user's properties
+router.get('/my-listings', authenticate, async (req, res) => {
+  try {
+    const properties = await prisma.property.findMany({
+      where: { ownerId: req.user.id },
+      include: {
+        images: { orderBy: { order: 'asc' } },
+        features: true,
+        _count: {
+          select: { savedBy: true, applications: true, reviews: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({ properties });
+  } catch (error) {
+    console.error('Get my listings error:', error);
+    res.status(500).json({ error: 'Failed to get your listings' });
+  }
+});
+
 // GET /api/properties/featured - Get featured properties
 router.get('/featured', optionalAuth, async (req, res) => {
   try {
@@ -352,11 +374,20 @@ router.post('/', authenticate, requireRole('LANDLORD', 'SELLER', 'AGENT', 'ADMIN
       },
     });
 
-    // Update landlord's total properties count
-    await prisma.landlordProfile.update({
-      where: { userId: req.user.id },
-      data: { totalProperties: { increment: 1 } },
-    });
+    // Update landlord's total properties count (only if they have a landlord profile)
+    try {
+      await prisma.landlordProfile.upsert({
+        where: { userId: req.user.id },
+        update: { totalProperties: { increment: 1 } },
+        create: { 
+          userId: req.user.id,
+          totalProperties: 1
+        },
+      });
+    } catch (profileError) {
+      // Landlord profile update is optional, don't fail the request
+      console.log('Could not update landlord profile:', profileError.message);
+    }
 
     res.status(201).json({ property });
   } catch (error) {

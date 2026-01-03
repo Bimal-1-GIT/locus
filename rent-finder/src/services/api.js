@@ -150,6 +150,10 @@ class ApiClient {
     return this.request(`/properties?${searchParams.toString()}`);
   }
 
+  async getMyListings() {
+    return this.request('/properties/my-listings');
+  }
+
   async getFeaturedProperties(listingType = null, limit = 8) {
     const params = new URLSearchParams({ limit });
     if (listingType) params.append('listingType', listingType);
@@ -242,6 +246,62 @@ class ApiClient {
 
   async getUnreadCount() {
     return this.request('/messages/unread/count');
+  }
+
+  // Upload endpoints
+  async uploadImages(files) {
+    // Filter out any undefined or invalid files
+    const validFiles = files.filter(file => file && file instanceof File);
+    console.log('Valid files for upload:', validFiles.length, validFiles);
+    
+    if (validFiles.length === 0) {
+      throw new ApiError('No valid files to upload', 400, {});
+    }
+    
+    const formData = new FormData();
+    validFiles.forEach((file, index) => {
+      console.log(`Appending file ${index}:`, file.name, file.type, file.size);
+      formData.append('images', file);
+    });
+
+    const token = this.getToken();
+    console.log('Uploading to:', `${this.baseUrl}/upload/images`);
+    
+    const response = await fetch(`${this.baseUrl}/upload/images`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log('Upload response:', response.status, data);
+    
+    if (!response.ok) {
+      throw new ApiError(data.error || 'Upload failed', response.status, data);
+    }
+    return data;
+  }
+
+  async uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const token = this.getToken();
+    const response = await fetch(`${this.baseUrl}/upload/image`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new ApiError(data.error || 'Upload failed', response.status, data);
+    }
+    return data;
   }
 
   // Health check

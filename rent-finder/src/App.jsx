@@ -10,11 +10,14 @@ import MessagesPage from './pages/MessagesPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import ListPropertyPage from './pages/ListPropertyPage';
+import MyListingsPage from './pages/MyListingsPage';
+import EditListingPage from './pages/EditListingPage';
 
 // Layout wrapper that conditionally shows header
 function AppLayout({ children }) {
   const location = useLocation();
-  const hideHeaderPaths = ['/login', '/register'];
+  const hideHeaderPaths = ['/login', '/register', '/list-property'];
   const showHeader = !hideHeaderPaths.includes(location.pathname);
   
   return (
@@ -40,6 +43,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/list-property" element={<ListPropertyPage />} />
+              <Route path="/my-listings" element={<MyListingsPage />} />
+              <Route path="/edit-listing/:id" element={<EditListingPage />} />
             </Routes>
           </AppLayout>
         </Router>

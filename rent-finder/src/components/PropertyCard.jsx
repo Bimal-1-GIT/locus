@@ -17,23 +17,39 @@ export default function PropertyCard({ property, variant = 'default' }) {
   const [currentImage, setCurrentImage] = useState(0);
   const { colors, isIndigo } = useMode();
 
+  // Ensure images array has at least one fallback image
+  const images = property.images?.length > 0 
+    ? property.images 
+    : [property.image || `https://picsum.photos/seed/${property.id || 'default'}/800/600`];
+
   const formatPrice = (price, priceType) => {
-    if (priceType === 'month') {
+    // Handle rental properties - check for various formats from API
+    const isRental = priceType === 'month' || 
+                     priceType === 'MONTHLY' || 
+                     priceType === 'monthly' ||
+                     property.type === 'rent' ||
+                     property.type === 'RENT';
+    
+    if (isRental) {
       return `$${price.toLocaleString()}/mo`;
     }
-    return `$${(price / 1000000).toFixed(2)}M`;
+    // For sale properties, format as millions if >= 1M, otherwise show full price
+    if (price >= 1000000) {
+      return `$${(price / 1000000).toFixed(2)}M`;
+    }
+    return `$${price.toLocaleString()}`;
   };
 
   const nextImage = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImage((prev) => (prev + 1) % property.images.length);
+    setCurrentImage((prev) => (prev + 1) % images.length);
   };
 
   const prevImage = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImage((prev) => (prev - 1 + property.images.length) % property.images.length);
+    setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
   };
 
   // Bento grid large card
@@ -46,13 +62,13 @@ export default function PropertyCard({ property, variant = 'default' }) {
         {/* Image */}
         <div className="relative h-80 overflow-hidden">
           <img
-            src={property.images[currentImage]}
+            src={images[currentImage]}
             alt={property.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           
           {/* Image navigation */}
-          {property.images.length > 1 && (
+          {images.length > 1 && (
             <>
               <button 
                 onClick={prevImage}
@@ -68,7 +84,7 @@ export default function PropertyCard({ property, variant = 'default' }) {
               </button>
               {/* Dots */}
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                {property.images.map((_, idx) => (
+                {images.map((_, idx) => (
                   <span 
                     key={idx}
                     className={`w-1.5 h-1.5 rounded-full transition-colors ${
@@ -175,7 +191,7 @@ export default function PropertyCard({ property, variant = 'default' }) {
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src={property.image}
+          src={images[0]}
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
